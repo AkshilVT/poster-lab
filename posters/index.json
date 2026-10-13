@@ -1,0 +1,93 @@
+[
+ {
+  "id": "tokyo",
+  "title": "Tokyo",
+  "ref": "refs/tokyo.jpg",
+  "file": "posters/tokyo.json"
+ },
+ {
+  "id": "look-up-kid",
+  "title": "Look Up, Kid",
+  "ref": "refs/look-up-kid.jpg",
+  "file": "posters/look-up-kid.json"
+ },
+ {
+  "id": "cruise-memory",
+  "title": "Cruise Memory",
+  "ref": "refs/cruise-memory.jpg",
+  "file": "posters/cruise-memory.json"
+ },
+ {
+  "id": "city-trace",
+  "title": "City Trace",
+  "ref": "refs/city-trace.jpg",
+  "file": "posters/city-trace.json"
+ },
+ {
+  "id": "bali-tanah-lot",
+  "title": "Bali",
+  "ref": "refs/tokyo.jpg",
+  "file": "posters/bali-tanah-lot.json",
+  "group": "Bali set",
+  "thumb": "assets/bali/thumbs/bali-tanah-lot.jpg"
+ },
+ {
+  "id": "bali-look-up",
+  "title": "Look Up",
+  "ref": "refs/look-up-kid.jpg",
+  "file": "posters/bali-look-up.json",
+  "group": "Bali set",
+  "thumb": "assets/bali/thumbs/bali-look-up.jpg"
+ },
+ {
+  "id": "bali-island-memory",
+  "title": "Island Memory",
+  "ref": "refs/cruise-memory.jpg",
+  "file": "posters/bali-island-memory.json",
+  "group": "Bali set",
+  "thumb": "assets/bali/thumbs/bali-island-memory.jpg"
+ },
+ {
+  "id": "bali-gili-trace",
+  "title": "Gili Trace",
+  "ref": "refs/city-trace.jpg",
+  "file": "posters/bali-gili-trace.json",
+  "group": "Bali set",
+  "thumb": "assets/bali/thumbs/bali-gili-trace.jpg"
+ },
+ {
+  "id": "motion-in-blur",
+  "title": "Motion in Blur",
+  "ref": "refs/motion-in-blur.jpg"
+ },
+ {
+  "id": "rule-of-thirds",
+  "title": "Rule of Thirds",
+  "ref": "refs/rule-of-thirds.jpg"
+ },
+ {
+  "id": "aesthetics-harmony",
+  "title": "Aesthetics Harmony",
+  "ref": "refs/aesthetics-harmony.jpg"
+ },
+ {
+  "id": "shine",
+  "title": "Shine",
+  "ref": "refs/shine.jpg"
+ },
+ {
+  "id": "project-becoming",
+  "title": "Project Becoming",
+  "ref": "refs/project-becoming.jpg"
+ },
+ {
+  "id": "kathmandu-sketch",
+  "title": "Kathmandu Sketch",
+  "ref": "refs/kathmandu-sketch.jpg"
+ },
+ {
+  "id": "six-posters",
+  "title": "Six Posters",
+  "ref": "refs/six-posters.jpg"
+ }
+]

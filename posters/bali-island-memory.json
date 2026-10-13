@@ -1,0 +1,293 @@
+{
+ "id": "bali-island-memory",
+ "title": "Bali \u2014 Island Memory",
+ "ref": "refs/cruise-memory.jpg",
+ "width": 383,
+ "height": 680,
+ "background": "#e9e0d3",
+ "credit": "Bali set \u00b7 built on the Cruise Memory recreation. Gili Trawangan street (c83918ff), subject cut with Apple Vision.",
+ "sources": {
+  "photo": {
+   "label": "Gili street",
+   "src": "assets/bali/gili-pose.jpg",
+   "cut": "assets/bali/gili-pose-cut.png",
+   "zoom": 1.18,
+   "fx": 0.165,
+   "fy": 0.3
+  }
+ },
+ "layers": [
+  {
+   "id": "row-cr",
+   "name": "Letters IS",
+   "type": "text",
+   "text": "IS",
+   "fill": "@photo",
+   "font": "Open Sans",
+   "weight": 800,
+   "size": 265.4,
+   "leading": 1,
+   "tracking": -0.0377,
+   "x": 176,
+   "y": 99.4,
+   "style": {
+    "fontVariationSettings": "\"wdth\" 75"
+   },
+   "art": {
+    "src": "assets/cruise-memory/letters-cr.png",
+    "text": "CR",
+    "w": 262,
+    "h": 204,
+    "dx": 10,
+    "dy": 42.6
+   }
+  },
+  {
+   "id": "row-ui",
+   "name": "Letters LA",
+   "type": "text",
+   "text": "LA",
+   "fill": "@photo",
+   "font": "Open Sans",
+   "weight": 800,
+   "size": 276.6,
+   "leading": 1,
+   "tracking": -0.0723,
+   "x": -14,
+   "y": 294.5,
+   "style": {
+    "fontVariationSettings": "\"wdth\" 75"
+   },
+   "art": {
+    "src": "assets/cruise-memory/letters-ui.png",
+    "text": "UI",
+    "w": 194,
+    "h": 201,
+    "dx": 9,
+    "dy": 50.5
+   }
+  },
+  {
+   "id": "row-se",
+   "name": "Letters ND",
+   "type": "text",
+   "text": "ND",
+   "fill": "@photo",
+   "font": "Open Sans",
+   "weight": 800,
+   "size": 276.8,
+   "leading": 1,
+   "tracking": -0.018,
+   "x": -1,
+   "y": 501.5,
+   "style": {
+    "fontVariationSettings": "\"wdth\" 75"
+   },
+   "art": {
+    "src": "assets/cruise-memory/letters-se.png",
+    "text": "SE",
+    "w": 246,
+    "h": 205,
+    "dx": 7,
+    "dy": 44.5
+   }
+  },
+  {
+   "id": "window",
+   "name": "Photo window",
+   "type": "shape",
+   "x": 194,
+   "y": 349,
+   "w": 189,
+   "h": 331,
+   "fill": "@photo",
+   "poly": [
+    [
+     194.72,
+     349.55
+    ],
+    [
+     383,
+     349.55
+    ],
+    [
+     383,
+     680
+    ],
+    [
+     253.68,
+     680
+    ],
+    [
+     253.68,
+     542.14
+    ],
+    [
+     194.72,
+     542.14
+    ]
+   ],
+   "hidden": true
+  },
+  {
+   "id": "subject",
+   "name": "Him",
+   "type": "image",
+   "source": "photo",
+   "cut": true,
+   "filter": "brightness(1.08)"
+  },
+  {
+   "id": "plus-tl",
+   "name": "Corner mark",
+   "type": "svg",
+   "x": 21.5,
+   "y": 27.5,
+   "w": 12,
+   "h": 12,
+   "svg": "<svg viewBox=\"0 0 14 14\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M7 0V14M0 7H14\" stroke=\"currentColor\" stroke-width=\"1.1\" fill=\"none\"/></svg>",
+   "style": {
+    "color": "#5a4a3c"
+   }
+  },
+  {
+   "id": "dash-1",
+   "name": "Dash",
+   "type": "shape",
+   "x": 25,
+   "y": 71.5,
+   "w": 9,
+   "h": 1,
+   "fill": "#d7402c"
+  },
+  {
+   "id": "title-1",
+   "name": "Title line 1",
+   "type": "text",
+   "text": "ISLAND",
+   "font": "Bellefair",
+   "size": 30.71,
+   "leading": 1,
+   "tracking": 0.075,
+   "color": "#22160a",
+   "x": 23,
+   "y": 95.4,
+   "art": {
+    "src": "assets/cruise-memory/letters-title-1.png",
+    "text": "CRUISE",
+    "w": 120,
+    "h": 29,
+    "dx": -2,
+    "dy": -2.4
+   }
+  },
+  {
+   "id": "title-2",
+   "name": "Title line 2",
+   "type": "text",
+   "text": "MEMORY",
+   "font": "Bellefair",
+   "size": 30.71,
+   "leading": 1,
+   "tracking": 0.017,
+   "color": "#22160a",
+   "x": 24,
+   "y": 127.4,
+   "art": {
+    "src": "assets/cruise-memory/letters-title-2.png",
+    "text": "MEMORY",
+    "w": 142,
+    "h": 31,
+    "dx": -3,
+    "dy": -2.4
+   },
+   "artOff": true
+  },
+  {
+   "id": "dash-2",
+   "name": "Dash",
+   "type": "shape",
+   "x": 25,
+   "y": 173.3,
+   "w": 8,
+   "h": 1,
+   "fill": "#d7402c"
+  },
+  {
+   "id": "tag",
+   "name": "Tagline",
+   "type": "text",
+   "text": "GILI\nTRAWANGAN",
+   "font": "Figtree",
+   "weight": 500,
+   "size": 9.36,
+   "leading": 1.39,
+   "tracking": 0.17,
+   "color": "#4e433b",
+   "x": 24,
+   "y": 190.5
+  },
+  {
+   "id": "dash-3",
+   "name": "Dash",
+   "type": "shape",
+   "x": 25,
+   "y": 234.6,
+   "w": 7,
+   "h": 1,
+   "fill": "#d7402c"
+  },
+  {
+   "id": "line",
+   "name": "Line",
+   "type": "text",
+   "text": "no cars, no clocks,\njust island time",
+   "font": "EB Garamond",
+   "italic": true,
+   "weight": 400,
+   "size": 9.9,
+   "leading": 1.25,
+   "color": "#5c4f44",
+   "x": 25,
+   "y": 248.3
+  },
+  {
+   "id": "dash-4",
+   "name": "Dash",
+   "type": "shape",
+   "x": 25,
+   "y": 290.2,
+   "w": 7,
+   "h": 1,
+   "fill": "#d7402c"
+  },
+  {
+   "id": "year",
+   "name": "Year",
+   "type": "text",
+   "text": "2026",
+   "font": "Figtree",
+   "weight": 400,
+   "size": 12.2,
+   "leading": 1.2,
+   "tracking": -0.04,
+   "color": "#4a3e33",
+   "x": 24.5,
+   "y": 304.7
+  },
+  {
+   "id": "plus-br",
+   "name": "Corner mark",
+   "type": "svg",
+   "x": 353.5,
+   "y": 655.5,
+   "w": 14,
+   "h": 14,
+   "svg": "<svg viewBox=\"0 0 14 14\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M7 0V14M0 7H14\" stroke=\"currentColor\" stroke-width=\"1.1\" fill=\"none\"/></svg>",
+   "style": {
+    "color": "#e6d8c4"
+   }
+  }
+ ],
+ "group": "Bali set"
+}

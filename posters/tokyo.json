@@ -1,0 +1,77 @@
+{
+ "id": "tokyo",
+ "title": "Tokyo \u2014 Asakusa",
+ "ref": "refs/tokyo.jpg",
+ "width": 735,
+ "height": 919,
+ "background": "#e4dad0",
+ "sources": {
+  "landmark": {
+   "label": "Landmark",
+   "src": "assets/tokyo/pagoda.png",
+   "cut": "assets/tokyo/pagoda.png"
+  }
+ },
+ "layers": [
+  {
+   "id": "band",
+   "name": "Red block",
+   "type": "shape",
+   "x": 0,
+   "y": 438,
+   "w": 735,
+   "h": 481,
+   "fill": "#d82c2c"
+  },
+  {
+   "id": "city",
+   "name": "City name",
+   "type": "text",
+   "text": "TOKYO",
+   "font": "Anton",
+   "size": 310.5,
+   "leading": 1,
+   "tracking": 0,
+   "color": "#d82c2c",
+   "x": 14,
+   "y": 152
+  },
+  {
+   "id": "landmark",
+   "name": "Landmark",
+   "type": "image",
+   "source": "landmark",
+   "cut": true,
+   "filter": "grayscale(1)"
+  },
+  {
+   "id": "district",
+   "name": "District",
+   "type": "text",
+   "text": "ASAKUSA",
+   "font": "Inter",
+   "weight": 500,
+   "size": 39,
+   "leading": 1,
+   "tracking": -0.018,
+   "color": "#403830",
+   "x": 28,
+   "y": 103
+  },
+  {
+   "id": "country",
+   "name": "Country",
+   "type": "text",
+   "text": "JAPAN",
+   "font": "Inter",
+   "weight": 500,
+   "size": 39,
+   "leading": 1,
+   "tracking": -0.018,
+   "color": "#403830",
+   "x": 531,
+   "y": 103
+  }
+ ],
+ "credit": "Recreated from a Pinterest pin. Pagoda + rooftops lifted from the pin with Apple Vision and a red/beige colour key; type is Anton + Inter."
+}

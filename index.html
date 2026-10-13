@@ -1,0 +1,1399 @@
+<!DOCTYPE html>
+<html data-fused-theme="shell">
+<head>
+<meta charset="utf-8" />
+<!-- Declares this page a fused app's entry — keep it near the top of <head>
+     (detection reads only the first 4 KiB). -->
+<meta name="fused-app" />
+<!-- The fused page API version this app was authored against (see
+     fused_render/fused_api_version.py). The app page offers a "Migrate"
+     task when the runtime has moved past it. -->
+<meta name="fused-api-version" content="1" />
+<meta name="fused-app-id" content="poster-lab-0b14d618" />
+<title>Poster Lab</title>
+<style>
+  :root {
+    color-scheme: dark;
+    --bg: #0e1013; --panel: #15181d; --panel2: #1b1f26; --hover: #22262e;
+    --text: #e4e7ec; --muted: #8b93a0; --line: #262a33;
+    --accent: #7c9cff; --accent-text: #0e1013; --sel: #4f8cff;
+    --stage: #0a0b0d; --danger: #ff6b6b;
+  }
+  :root[data-theme="light"] {
+    color-scheme: light;
+    --bg: #f2f3f5; --panel: #ffffff; --panel2: #f6f7f9; --hover: #eceef2;
+    --text: #16191f; --muted: #646b78; --line: #e1e4e9;
+    --accent: #3d63f0; --accent-text: #ffffff; --sel: #2f6bff;
+    --stage: #e4e6ea; --danger: #d93a3a;
+  }
+  *, *::before, *::after { box-sizing: border-box; }
+  body { margin: 0; }
+  button, input, select, textarea { font: inherit; color: inherit; margin: 0; }
+  button { background: none; border: 0; padding: 0; cursor: pointer; }
+  ::placeholder { color: var(--muted); opacity: 1; }
+  input, select, textarea, progress { accent-color: var(--accent, currentColor); }
+  img, svg, video, canvas { display: block; max-width: 100%; }
+
+  html, body { height: 100%; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    font-size: 12px; color: var(--text); background: var(--bg); overflow: hidden;
+  }
+  .scroll { overflow: auto; scrollbar-width: thin; scrollbar-color: var(--line) transparent; }
+  .scroll::-webkit-scrollbar { width: 8px; height: 8px; }
+  .scroll::-webkit-scrollbar-thumb { background: var(--line); border-radius: 4px; }
+
+  #app { display: grid; grid-template-columns: 156px minmax(0, 1fr) 300px; grid-template-rows: 44px minmax(0, 1fr); height: 100vh; }
+  #bar {
+    grid-column: 1 / -1; display: flex; align-items: center; gap: 10px; padding: 0 12px;
+    background: var(--panel); border-bottom: 1px solid var(--line); min-width: 0;
+  }
+  #bar .brand { font-weight: 700; letter-spacing: 0.01em; white-space: nowrap; }
+  #bar .title { color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; }
+  #bar .spacer { flex: 1; }
+  .seg { display: flex; background: var(--panel2); border: 1px solid var(--line); border-radius: 7px; padding: 2px; }
+  .seg button { padding: 4px 9px; border-radius: 5px; color: var(--muted); white-space: nowrap; }
+  .seg button:hover { color: var(--text); }
+  .seg button.on { background: var(--hover); color: var(--text); box-shadow: 0 0 0 1px var(--line); }
+  .btn {
+    display: inline-flex; align-items: center; gap: 6px; padding: 5px 9px; border-radius: 6px;
+    border: 1px solid var(--line); background: var(--panel2); white-space: nowrap;
+  }
+  .btn:hover { background: var(--hover); }
+  .btn:disabled { opacity: 0.45; cursor: default; }
+  .btn.primary { background: var(--accent); color: var(--accent-text); border-color: transparent; }
+  .btn.danger { color: var(--danger); }
+  .iconbtn { width: 28px; height: 28px; display: inline-flex; align-items: center; justify-content: center; border-radius: 6px; color: var(--muted); }
+  .iconbtn:hover { background: var(--hover); color: var(--text); }
+  .iconbtn:disabled { opacity: 0.35; cursor: default; background: none; }
+  .iconbtn svg, .btn svg { width: 15px; height: 15px; }
+  #mixwrap { display: flex; align-items: center; gap: 6px; color: var(--muted); }
+  #mixwrap[hidden] { display: none; }
+  #mix { width: 110px; }
+
+  #shelf { background: var(--panel); border-right: 1px solid var(--line); padding: 10px; display: flex; flex-direction: column; gap: 10px; }
+  .card { display: block; width: 100%; text-align: left; border-radius: 8px; padding: 5px; border: 1px solid transparent; }
+  .card:hover { background: var(--hover); }
+  .card.on { border-color: var(--sel); background: var(--hover); }
+  .card img { width: 100%; height: auto; border-radius: 4px; }
+  .card .cap { display: flex; justify-content: space-between; gap: 4px; margin-top: 5px; font-size: 11px; }
+  .card .cap span:last-child { color: var(--muted); }
+  .card.soon { opacity: 0.42; cursor: default; }
+  .card.soon:hover { background: none; }
+  .shelf-h { color: var(--muted); font-size: 10.5px; text-transform: uppercase; letter-spacing: 0.08em; margin: 2px 2px -2px; }
+
+  #stage { position: relative; overflow: hidden; background: var(--stage); }
+  #frame { position: absolute; left: 0; top: 0; transform-origin: 0 0; isolation: isolate; box-shadow: 0 10px 40px rgba(0, 0, 0, 0.35); }
+  #ref { position: absolute; left: 0; top: 0; width: 100%; height: 100%; max-width: none; pointer-events: none; opacity: 0; }
+  #frame.v-original #ref { opacity: 1; }
+  #frame.v-diff #ref { opacity: 1; mix-blend-mode: difference; }
+  #selbox { position: absolute; pointer-events: none; border: 1.5px solid var(--sel); display: none; }
+  #selbox.show { display: block; }
+  #selbox span { position: absolute; left: -1.5px; bottom: 100%; margin-bottom: 4px; padding: 2px 6px; border-radius: 4px; background: var(--sel); color: #fff; font-size: 10.5px; white-space: nowrap; }
+  #hover { position: absolute; pointer-events: none; border: 1px solid var(--sel); opacity: 0.55; display: none; }
+  #split { position: absolute; top: 0; width: 0; display: none; cursor: ew-resize; }
+  #split.show { display: block; }
+  #split::before { content: ""; position: absolute; left: -1px; top: 0; bottom: 0; width: 2px; background: #fff; box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.35); }
+  #split i { position: absolute; left: -14px; top: 50%; width: 28px; height: 28px; margin-top: -14px; border-radius: 50%; background: #fff; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.35); }
+  #split i::before, #split i::after { content: ""; position: absolute; top: 9px; border: 5px solid transparent; }
+  #split i::before { left: 1px; border-right-color: #333; }
+  #split i::after { right: 1px; border-left-color: #333; }
+  #split .tagl, #split .tagr { position: absolute; top: 10px; padding: 2px 6px; border-radius: 4px; background: rgba(0, 0, 0, 0.55); color: #fff; font-size: 10.5px; white-space: nowrap; }
+  #split .tagl { right: 8px; }
+  #split .tagr { left: 8px; }
+  #hint { position: absolute; left: 0; right: 0; bottom: 8px; padding: 0 12px; text-align: center; color: var(--muted); font-size: 11px; pointer-events: none; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  #hint kbd { font-family: ui-monospace, Menlo, Consolas, monospace; font-size: 10px; }
+  #stage.dropping::after { content: "Drop on a picture layer to swap it — anywhere else to add it"; position: absolute; inset: 10px; border: 2px dashed var(--accent); border-radius: 10px; display: flex; align-items: center; justify-content: center; color: var(--text); background: rgba(124, 156, 255, 0.08); pointer-events: none; font-size: 13px; }
+  #toast { position: absolute; left: 50%; bottom: 34px; transform: translateX(-50%); padding: 7px 12px; border-radius: 8px; background: var(--panel); border: 1px solid var(--line); box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3); display: none; white-space: nowrap; }
+  #toast.show { display: flex; align-items: center; gap: 8px; }
+  #toast.busy::before { content: ""; width: 12px; height: 12px; border-radius: 50%; border: 2px solid var(--muted); border-top-color: transparent; animation: spin 0.8s linear infinite; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* the poster itself — fixed colours, never themed */
+  .artboard { position: relative; overflow: hidden; isolation: isolate; -webkit-user-select: none; user-select: none; }
+  .artboard .layer { position: absolute; transform-origin: 50% 50%; }
+  .artboard .layer.image, .artboard .layer.shape { overflow: hidden; }
+  .artboard .layer img { position: absolute; max-width: none; pointer-events: none; -webkit-user-drag: none; }
+  .artboard .layer.text { white-space: pre; }
+  .artboard .layer.svg > svg { width: 100%; height: 100%; max-width: none; overflow: visible; }
+
+  #side { background: var(--panel); border-left: 1px solid var(--line); display: flex; flex-direction: column; min-height: 0; }
+  .sec-h { display: flex; align-items: center; justify-content: space-between; padding: 10px 12px 6px; color: var(--muted); font-size: 10.5px; text-transform: uppercase; letter-spacing: 0.08em; }
+  #layers { flex: 0 1 auto; max-height: 42%; min-height: 120px; border-bottom: 1px solid var(--line); display: flex; flex-direction: column; }
+  #layer-list { padding: 0 6px 8px; }
+  .lrow { display: flex; align-items: center; gap: 6px; height: 30px; padding: 0 6px 0 2px; border-radius: 6px; cursor: default; position: relative; }
+  .lrow:hover { background: var(--hover); }
+  .lrow.on { background: color-mix(in srgb, var(--sel) 22%, transparent); }
+  .lrow.off .lname, .lrow.off .kind { opacity: 0.4; }
+  .lrow .eye { width: 24px; height: 24px; display: inline-flex; align-items: center; justify-content: center; color: var(--muted); border-radius: 5px; flex: none; }
+  .lrow .eye:hover { color: var(--text); background: var(--panel2); }
+  .lrow .eye svg { width: 14px; height: 14px; }
+  .lrow .kind { width: 22px; height: 22px; border-radius: 4px; flex: none; display: inline-flex; align-items: center; justify-content: center; background: var(--panel2); color: var(--muted); overflow: hidden; }
+  .lrow .kind img { width: 100%; height: 100%; object-fit: cover; }
+  .lrow .kind svg { width: 13px; height: 13px; }
+  .lrow .lname { flex: 1; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .lrow .tag { font-size: 10px; color: var(--muted); }
+  .lrow.drop-above::before, .lrow.drop-below::after { content: ""; position: absolute; left: 4px; right: 4px; height: 2px; background: var(--sel); }
+  .lrow.drop-above::before { top: -1px; }
+  .lrow.drop-below::after { bottom: -1px; }
+
+  #inspector { flex: 1 1 auto; min-height: 0; padding-bottom: 16px; }
+  .group { padding: 4px 12px 10px; border-bottom: 1px solid var(--line); }
+  .group:last-child { border-bottom: 0; }
+  .group-h { color: var(--muted); font-size: 10.5px; text-transform: uppercase; letter-spacing: 0.08em; margin: 8px 0 8px; }
+  .ihead { padding: 12px 12px 8px; display: flex; align-items: baseline; justify-content: space-between; gap: 8px; }
+  .ihead b { font-size: 13px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0; }
+  .ihead span { color: var(--muted); white-space: nowrap; }
+  .row { display: flex; align-items: center; gap: 8px; margin-bottom: 7px; min-width: 0; }
+  .row > label { width: 64px; flex: none; color: var(--muted); }
+  .row > .ctl { flex: 1; min-width: 0; display: flex; gap: 6px; align-items: center; }
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 6px 8px; margin-bottom: 7px; }
+  .num { display: flex; align-items: center; background: var(--panel2); border: 1px solid var(--line); border-radius: 6px; height: 26px; min-width: 0; }
+  .num b { width: 20px; flex: none; text-align: center; color: var(--muted); font-weight: 500; font-size: 10.5px; cursor: ew-resize; -webkit-user-select: none; user-select: none; }
+  .num input { flex: 1; min-width: 0; width: 100%; background: none; border: 0; outline: none; height: 24px; padding: 0 6px 0 0; font-variant-numeric: tabular-nums; }
+  .field { width: 100%; background: var(--panel2); border: 1px solid var(--line); border-radius: 6px; padding: 5px 7px; outline: none; min-width: 0; }
+  .field:focus, .num:focus-within { border-color: var(--accent); }
+  textarea.field { resize: vertical; min-height: 54px; line-height: 1.4; }
+  select.field { -webkit-appearance: none; appearance: none; height: 26px; padding: 0 22px 0 7px; background-image: linear-gradient(45deg, transparent 50%, var(--muted) 50%), linear-gradient(135deg, var(--muted) 50%, transparent 50%); background-position: calc(100% - 12px) 11px, calc(100% - 8px) 11px; background-size: 4px 4px, 4px 4px; background-repeat: no-repeat; }
+  input[type="range"] { flex: 1; min-width: 0; }
+  .val { width: 38px; flex: none; text-align: right; color: var(--muted); font-variant-numeric: tabular-nums; }
+  .swatch { position: relative; width: 26px; height: 26px; border-radius: 6px; border: 1px solid var(--line); flex: none; overflow: hidden; }
+  .swatch input { position: absolute; inset: -6px; width: 40px; height: 40px; border: 0; padding: 0; cursor: pointer; opacity: 0; }
+  .photo { display: flex; gap: 10px; align-items: center; margin-bottom: 8px; }
+  .photo .thumb { width: 64px; height: 64px; border-radius: 6px; flex: none; background: var(--panel2); border: 1px solid var(--line); overflow: hidden; }
+  .photo .thumb.cut { background-color: transparent; background-image: linear-gradient(45deg, var(--line) 25%, transparent 25%, transparent 75%, var(--line) 75%), linear-gradient(45deg, var(--line) 25%, transparent 25%, transparent 75%, var(--line) 75%); background-size: 10px 10px; background-position: 0 0, 5px 5px; }
+  .photo .thumb img { width: 100%; height: 100%; object-fit: contain; }
+  .photo .meta { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+  .photo .meta small { color: var(--muted); }
+  .chk { display: flex; align-items: center; gap: 7px; margin-bottom: 7px; cursor: pointer; }
+  .acts { display: flex; flex-wrap: wrap; gap: 6px; }
+  .note { color: var(--muted); line-height: 1.5; }
+  .note kbd { font-family: ui-monospace, Menlo, Consolas, monospace; font-size: 10.5px; padding: 0 4px; border: 1px solid var(--line); border-radius: 4px; }
+  .swaplist { display: flex; flex-direction: column; gap: 8px; }
+  .swapitem { display: flex; align-items: center; gap: 10px; }
+  .swapitem .thumb { width: 44px; height: 44px; border-radius: 6px; flex: none; background: var(--panel2) center / cover no-repeat; border: 1px solid var(--line); }
+  .swapitem .meta { flex: 1; min-width: 0; }
+  .swapitem .meta div { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .swapitem .meta small { color: var(--muted); display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+  /* bare = just the poster at 1:1 (screenshots, export) */
+  html.bare, html.bare body { background: transparent; }
+  html.bare #app { display: block; }
+  html.bare #bar, html.bare #shelf, html.bare #side, html.bare #hint, html.bare #selbox, html.bare #hover, html.bare #split, html.bare #toast { display: none !important; }
+  html.bare #stage { position: static; background: transparent; overflow: visible; }
+  html.bare #frame { box-shadow: none; }
+
+  #preview { display: none; height: 100%; align-items: center; justify-content: center; gap: 14px; padding: 18px; background: var(--bg); }
+  html.preview #app { display: none; }
+  html.preview #preview { display: flex; }
+  #preview img { max-height: 78%; max-width: 30%; width: auto; height: auto; min-width: 0; border-radius: 6px; box-shadow: 0 6px 24px rgba(0, 0, 0, 0.3); }
+</style>
+</head>
+<body>
+<div id="preview"></div>
+<div id="app">
+  <header id="bar">
+    <span class="brand">Poster Lab</span>
+    <span class="title" id="title"></span>
+    <span class="spacer"></span>
+    <div class="seg" id="views" role="tablist" aria-label="Compare with original">
+      <button data-v="remix" title="Your layered recreation (1)">Remix</button>
+      <button data-v="original" title="The Pinterest original (2)">Original</button>
+      <button data-v="overlay" title="Original laid over the remix (3)">Overlay</button>
+      <button data-v="split" title="Drag the divider to compare (4)">Split</button>
+      <button data-v="diff" title="Difference — black means identical (5)">Difference</button>
+    </div>
+    <label id="mixwrap" hidden><span>Opacity</span><input type="range" id="mix" min="0" max="100" step="1" /></label>
+    <span class="spacer"></span>
+    <button class="iconbtn" id="undo" title="Undo (⌘Z)"></button>
+    <button class="iconbtn" id="redo" title="Redo (⇧⌘Z)"></button>
+    <button class="btn" id="addtext" title="Add a text layer"></button>
+    <button class="btn" id="addimage" title="Add a picture layer"></button>
+    <button class="btn" id="reset" title="Throw away every change to this poster">Reset</button>
+  </header>
+  <nav id="shelf" class="scroll"></nav>
+  <main id="stage">
+    <div id="frame"><div id="artboard" class="artboard"></div><img id="ref" alt="" /></div>
+    <div id="hover"></div>
+    <div id="selbox"><span></span></div>
+    <div id="split"><i></i><span class="tagl">Original</span><span class="tagr">Remix</span></div>
+    <div id="hint">Click to select · click again for the layer below · drag to move · <kbd>⌥</kbd>-drag to pan a photo · drop an image to swap it</div>
+    <div id="toast"></div>
+  </main>
+  <aside id="side">
+    <section id="layers">
+      <div class="sec-h"><span>Layers</span><span id="layercount"></span></div>
+      <div id="layer-list" class="scroll"></div>
+    </section>
+    <section id="inspector" class="scroll"></section>
+  </aside>
+</div>
+<input type="file" id="filepick" accept="image/*" hidden />
+<script>
+(() => {
+  "use strict";
+
+  // ---------------------------------------------------------------- basics
+  function isPreview() {
+    if (new URLSearchParams(location.search).get("_preview") === "1") return true;
+    try {
+      let w = window;
+      while (w.parent && w.parent !== w) {
+        w = w.parent;
+        if (new URLSearchParams(w.location.search).get("_preview") === "1") return true;
+      }
+    } catch (e) { /* cross-origin ancestor: the climb ends here */ }
+    return false;
+  }
+  const $ = (sel, root = document) => root.querySelector(sel);
+  function h(tag, props, ...kids) {
+    const n = document.createElement(tag);
+    if (props) {
+      for (const [k, v] of Object.entries(props)) {
+        if (v == null || v === false) continue;
+        if (k === "class") n.className = v;
+        else if (k === "text") n.textContent = v;
+        else if (k === "html") n.innerHTML = v;
+        else if (k.startsWith("on")) n.addEventListener(k.slice(2), v);
+        else n.setAttribute(k, v === true ? "" : v);
+      }
+    }
+    for (const kid of kids.flat()) if (kid != null && kid !== false) n.append(kid.nodeType ? kid : String(kid));
+    return n;
+  }
+  const px = (v) => v + "px";
+  const clone = (o) => JSON.parse(JSON.stringify(o));
+  const round = (v, d = 1) => Math.round(v * 10 ** d) / 10 ** d;
+  const asset = (p) => (/^(data:|blob:|https?:|\/api\/)/.test(p) ? p : fused.rawUrl(p));
+  const urlParams = new URLSearchParams(location.search);
+  const BARE = urlParams.get("bare") === "1";
+  const PURE = urlParams.get("pure") === "1"; // ignore saved changes: the poster exactly as defined
+
+  const ICON = {
+    eye: '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M1.5 8s2.4-4.5 6.5-4.5S14.5 8 14.5 8 12.1 12.5 8 12.5 1.5 8 1.5 8Z"/><circle cx="8" cy="8" r="2"/></svg>',
+    eyeOff: '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M2 2l12 12M6.6 3.7A6.6 6.6 0 0 1 8 3.5C12.1 3.5 14.5 8 14.5 8a11 11 0 0 1-1.9 2.5M10 11.9a6.4 6.4 0 0 1-2 .6C3.9 12.5 1.5 8 1.5 8a11.3 11.3 0 0 1 2.4-3"/></svg>',
+    text: '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 3.5h10M8 3.5v9.5"/></svg>',
+    shape: '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="2.5" y="2.5" width="11" height="11" rx="1.5"/></svg>',
+    svg: '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M2.5 13.5 13.5 2.5M3 3h4M3 3v4"/><circle cx="11" cy="11" r="2.5"/></svg>',
+    image: '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="2" y="2.5" width="12" height="11" rx="1.5"/><path d="m2.5 11 3.5-3.5 3 3 2-2 2.5 2.5"/></svg>',
+    undo: '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M5.5 3 2.5 6l3 3"/><path d="M2.5 6h7a4 4 0 0 1 0 8H7"/></svg>',
+    redo: '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m10.5 3 3 3-3 3"/><path d="M13.5 6h-7a4 4 0 0 0 0 8H9"/></svg>',
+    plusText: '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 3.5h8M6 3.5V13M11.5 9v5M9 11.5h5"/></svg>',
+    plusImage: '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M8.5 13.5H3a1 1 0 0 1-1-1v-9a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1V8"/><path d="m2.5 10.5 3-3 3 3"/><path d="M12.5 10v5M10 12.5h5"/></svg>',
+  };
+
+  // ---------------------------------------------------------------- state
+  let registry = [];           // posters/index.json entries
+  const defs = new Map();      // id -> poster definition (as authored)
+  let cur = null;              // { id, def, remix, eff }
+  let undoStack = [], redoStack = [], coalesceKey = null, coalesceAt = 0;
+  let scale = 1, frameX = 0, frameY = 0;
+  let drawSeq = 0;
+  let lastPick = null;         // {x, y, ids, i} — click again to dig down the stack
+
+  const getView = () => fused.params.get("view") || "remix";
+  const getMix = () => { const m = parseFloat(fused.params.get("mix")); return Number.isFinite(m) ? m : 50; };
+  const selId = () => fused.params.get("layer") || "";
+  const setParam = (k, v) => fused.params.set(k, v == null ? "" : String(v));
+
+  // ---------------------------------------------------------------- fonts
+  let fontList = [];
+  async function loadFonts() {
+    try { fontList = JSON.parse(await fused.readFile("fonts/fonts.json")); } catch (e) { fontList = []; }
+    const css = fontList.map((f) =>
+      `@font-face{font-family:"${f.family}";src:url("${fused.rawUrl("fonts/" + f.file)}") format("woff2");` +
+      `font-weight:${f.weight};font-style:${f.style};font-display:block;${f.stretch ? "font-stretch:" + f.stretch + ";" : ""}}`).join("\n");
+    document.head.append(h("style", { text: css }));
+  }
+  const families = () => [...new Set(fontList.map((f) => f.family))].sort();
+  function fontsFor(eff) {
+    const loads = eff.layers.filter((L) => L.type === "text" && L.font).map((L) =>
+      document.fonts.load(`${L.italic ? "italic " : ""}${L.weight || 400} 40px "${L.font}"`, L.text || "A").catch(() => null));
+    return Promise.all(loads).then(() => document.fonts.ready);
+  }
+
+  // ---------------------------------------------------------------- images
+  const imgs = new Map(); // url -> {img, w, h, promise, alpha}
+  function loadImage(url) {
+    let m = imgs.get(url);
+    if (!m) {
+      const img = new Image();
+      img.decoding = "async";
+      m = { img, w: 0, h: 0 };
+      const mm = m;
+      m.promise = new Promise((resolve) => {
+        img.onload = () => { mm.w = img.naturalWidth; mm.h = img.naturalHeight; resolve(mm); };
+        img.onerror = () => { mm.error = true; resolve(mm); };
+      });
+      img.src = asset(url);
+      imgs.set(url, m);
+    }
+    return m.promise;
+  }
+  function alphaMap(url) {
+    const m = imgs.get(url);
+    if (!m || !m.w) return null;
+    if (!m.alpha) {
+      const W = Math.min(400, m.w), H = Math.max(1, Math.round(m.h * W / m.w));
+      const c = document.createElement("canvas");
+      c.width = W; c.height = H;
+      const g = c.getContext("2d", { willReadFrequently: true });
+      g.drawImage(m.img, 0, 0, W, H);
+      try {
+        const d = g.getImageData(0, 0, W, H).data;
+        let x0 = W, y0 = H, x1 = -1, y1 = -1;
+        for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) {
+          if (d[(y * W + x) * 4 + 3] > 24) { if (x < x0) x0 = x; if (x > x1) x1 = x; if (y < y0) y0 = y; if (y > y1) y1 = y; }
+        }
+        m.alpha = { W, H, d, bounds: x1 < 0 ? null : { u0: x0 / W, v0: y0 / H, u1: (x1 + 1) / W, v1: (y1 + 1) / H } };
+      } catch (e) { m.alpha = { none: true }; }
+    }
+    return m.alpha.none ? null : m.alpha;
+  }
+
+  // Where a source's photo lands on the poster: its frame, cover-fitted, then
+  // the user's zoom and pan. Every layer that shows this photo uses this rect,
+  // so a photo seen through letters stays registered with its cut-out.
+  function srcRect(S) {
+    const E = cur.eff;
+    const f = S.frame || { x: 0, y: 0, w: E.width, h: E.height };
+    const m = imgs.get(S.src);
+    const nw = (m && m.w) || f.w, nh = (m && m.h) || f.h;
+    let s = S.fit === "contain" ? Math.min(f.w / nw, f.h / nh) : Math.max(f.w / nw, f.h / nh);
+    s *= S.zoom || 1;
+    const w = nw * s, hh = nh * s;
+    const fx = S.fx == null ? 0.5 : S.fx, fy = S.fy == null ? 0.5 : S.fy;
+    return { x: f.x + (f.w - w) * fx, y: f.y + (f.h - hh) * fy, w, h: hh };
+  }
+
+  // ---------------------------------------------------------------- model
+  // effective poster = authored definition + this machine's saved changes
+  function effective(def, rx) {
+    const e = clone(def);
+    e.sources = e.sources || {};
+    for (const S of Object.values(e.sources)) S._default = { src: S.src, cut: S.cut };
+    for (const [sid, patch] of Object.entries(rx.sources || {})) {
+      e.sources[sid] = Object.assign({}, e.sources[sid] || {}, patch);
+      if (!e.sources[sid]._default) e.sources[sid]._default = {};
+    }
+    for (const L of e.layers) L._base = true;
+    for (const X of rx.extra || []) e.layers.push(Object.assign(clone(X), { _extra: true }));
+    for (const L of e.layers) {
+      if (L.type === "image" && L.w == null) {
+        const S = e.sources[L.source];
+        const f = (S && S.frame) || { x: 0, y: 0, w: e.width, h: e.height };
+        if (L.x == null) L.x = f.x;
+        if (L.y == null) L.y = f.y;
+        L.w = f.w; L.h = f.h;
+      }
+      L._x0 = L.x0 != null ? L.x0 : L.x || 0;
+      L._y0 = L.y0 != null ? L.y0 : L.y || 0;
+    }
+    const byId = new Map(e.layers.map((L) => [L.id, L]));
+    for (const [id, patch] of Object.entries(rx.layers || {})) {
+      const L = byId.get(id);
+      if (!L) continue;
+      for (const [k, v] of Object.entries(patch)) {
+        if (k === "style") L.style = Object.assign({}, L.style || {}, v);
+        else if (v === null) delete L[k];
+        else L[k] = v;
+      }
+    }
+    if (rx.order && rx.order.length) {
+      const pos = new Map(rx.order.map((id, i) => [id, i]));
+      const known = e.layers.filter((L) => pos.has(L.id)).sort((a, b) => pos.get(a.id) - pos.get(b.id));
+      const rest = e.layers.filter((L) => !pos.has(L.id));
+      e.layers = known.concat(rest);
+    }
+    return e;
+  }
+  const layerById = (id) => cur && cur.eff.layers.find((L) => L.id === id);
+  const usesSource = (L) => (L.type === "image" ? L.source : (typeof L.fill === "string" && L.fill[0] === "@" ? L.fill.slice(1) : null));
+
+  // ---------------------------------------------------------------- render
+  function renderArtboard() {
+    const E = cur.eff, ab = $("#artboard");
+    ab.style.width = px(E.width);
+    ab.style.height = px(E.height);
+    ab.style.background = E.background || "transparent";
+    ab.replaceChildren(...E.layers.map(renderLayer));
+  }
+  function rerenderLayer(L) {
+    const old = $(`#artboard > [data-id="${CSS.escape(L.id)}"]`);
+    if (old) old.replaceWith(renderLayer(L));
+  }
+  function applyStyle(s, style) {
+    if (!style) return;
+    for (const [k, v] of Object.entries(style)) {
+      if (k.includes("-")) s.setProperty(k, v);
+      else s[k] = v;
+    }
+  }
+  function renderLayer(L) {
+    const n = h("div", { class: "layer " + L.type });
+    n.dataset.id = L.id;
+    const s = n.style;
+    s.left = px(L.x || 0);
+    s.top = px(L.y || 0);
+    if (L.w != null) s.width = px(L.w);
+    if (L.h != null) s.height = px(L.h);
+    const tf = [];
+    if (L.rotate) tf.push(`rotate(${L.rotate}deg)`);
+    if (L.scale != null && L.scale !== 1) tf.push(`scale(${L.scale})`);
+    if (tf.length) s.transform = tf.join(" ");
+    if (L.opacity != null && L.opacity !== 1) s.opacity = L.opacity;
+    if (L.blend && L.blend !== "normal") s.mixBlendMode = L.blend;
+    if (L.filter) s.filter = L.filter;
+    if (L.poly) {
+      const clip = `polygon(${L.poly.map(([x, y]) => `${round(x - L._x0, 2)}px ${round(y - L._y0, 2)}px`).join(",")})`;
+      s.webkitClipPath = clip;
+      s.clipPath = clip;
+    } else if (L.clip) {
+      s.webkitClipPath = L.clip;
+      s.clipPath = L.clip;
+    }
+    if (L.mask) {
+      s.webkitMaskImage = L.mask;
+      s.maskImage = L.mask;
+    }
+    if (L.hidden) s.visibility = "hidden";
+    if (L.type === "shape") paintFill(n, L);
+    else if (L.type === "image") paintImage(n, L);
+    else if (L.type === "text") paintText(n, L);
+    else if (L.type === "svg") n.innerHTML = L.svg || "";
+    applyStyle(s, L.style);
+    return n;
+  }
+  function photoBackground(n, S, ox, oy) {
+    const r = srcRect(S), s = n.style;
+    s.backgroundImage = `url("${asset(S.src)}")`;
+    s.backgroundRepeat = "no-repeat";
+    s.backgroundSize = `${round(r.w, 2)}px ${round(r.h, 2)}px`;
+    s.backgroundPosition = `${round(r.x - ox, 2)}px ${round(r.y - oy, 2)}px`;
+  }
+  function paintFill(n, L) {
+    const sid = usesSource(L);
+    if (sid && cur.eff.sources[sid]) photoBackground(n, cur.eff.sources[sid], L.x || 0, L.y || 0);
+    else if (L.fill) n.style.background = L.fill;
+    if (L.radius) n.style.borderRadius = typeof L.radius === "number" ? px(L.radius) : L.radius;
+  }
+  function paintImage(n, L) {
+    const S = cur.eff.sources[L.source];
+    if (!S) return;
+    const url = L.cut && S.cut ? S.cut : S.src;
+    const r = srcRect(S);
+    const img = h("img", { src: asset(url), alt: "", draggable: "false" });
+    img.style.left = px(round(r.x - L._x0, 2));
+    img.style.top = px(round(r.y - L._y0, 2));
+    img.style.width = px(round(r.w, 2));
+    img.style.height = px(round(r.h, 2));
+    n.append(img);
+  }
+  // Original lettering traced from the pin, used while the words are unchanged:
+  // its alpha is a mask the layer colour shows through, so colour stays editable.
+  const showsArt = (L) => !!(L.art && !L.artOff && (L.text || "") === L.art.text);
+  function paintArt(n, L) {
+    const a = L.art, s = n.style, url = `url("${asset(a.src)}")`;
+    const ax = (L.x || 0) + (a.dx || 0), ay = (L.y || 0) + (a.dy || 0);
+    s.left = px(ax);
+    s.top = px(ay);
+    s.width = px(a.w);
+    s.height = px(a.h);
+    const sid = usesSource(L); // photo-filled lettering shows its photo through the mask
+    if (sid && cur.eff.sources[sid]) photoBackground(n, cur.eff.sources[sid], ax, ay);
+    else s.background = L.color || "#000";
+    s.webkitMaskImage = url;
+    s.maskImage = url;
+    s.webkitMaskSize = s.maskSize = "100% 100%";
+    s.webkitMaskRepeat = s.maskRepeat = "no-repeat";
+    n.classList.add("art");
+  }
+  function paintText(n, L) {
+    if (showsArt(L)) return paintArt(n, L);
+    const s = n.style;
+    n.textContent = L.text == null ? "" : L.text;
+    s.fontFamily = `"${L.font || "Inter"}", ${L.fallback || "sans-serif"}`;
+    s.fontSize = px(L.size || 24);
+    s.fontWeight = L.weight || 400;
+    if (L.italic) s.fontStyle = "italic";
+    if (L.stretch) s.fontStretch = L.stretch + "%";
+    if (L.opsz != null) s.fontVariationSettings = `"opsz" ${L.opsz}`;
+    s.lineHeight = L.leading == null ? "1.2" : String(L.leading);
+    if (L.tracking) s.letterSpacing = L.tracking + "em";
+    if (L.align) s.textAlign = L.align;
+    if (L.case) s.textTransform = L.case;
+    if (L.stroke) s.webkitTextStroke = L.stroke;
+    if (L.shadow) s.textShadow = L.shadow;
+    const sid = usesSource(L);
+    if (sid && cur.eff.sources[sid]) {
+      // photo seen through the letters: pad the box so glyph overshoot is painted too
+      const pad = Math.ceil((L.size || 24) * 0.5);
+      n.dataset.pad = pad;
+      s.padding = px(pad);
+      s.left = px((L.x || 0) - pad);
+      s.top = px((L.y || 0) - pad);
+      if (L.w != null) s.width = px(L.w + 2 * pad);
+      if (L.h != null) s.height = px(L.h + 2 * pad);
+      photoBackground(n, cur.eff.sources[sid], (L.x || 0) - pad, (L.y || 0) - pad);
+      s.webkitBackgroundClip = "text";
+      s.backgroundClip = "text";
+      s.webkitTextFillColor = "transparent";
+      s.color = "transparent";
+    } else {
+      s.color = L.color || "#000";
+    }
+  }
+
+  // ---------------------------------------------------------------- stage
+  function fit() {
+    if (!cur) return;
+    const E = cur.eff, st = $("#stage"), fr = $("#frame");
+    fr.style.width = px(E.width);
+    fr.style.height = px(E.height);
+    if (BARE) { scale = 1; frameX = 0; frameY = 0; fr.style.transform = "none"; return; }
+    const W = st.clientWidth, H = st.clientHeight;
+    scale = Math.max(0.05, Math.min((W - 64) / E.width, (H - 76) / E.height));
+    frameX = Math.round((W - E.width * scale) / 2);
+    frameY = Math.round((H - 24 - E.height * scale) / 2);
+    fr.style.transform = `translate(${frameX}px, ${frameY}px) scale(${scale})`;
+    updateSelection();
+    updateCompare();
+  }
+  function updateCompare() {
+    const v = getView(), fr = $("#frame"), ref = $("#ref"), mix = getMix();
+    fr.className = "v-" + v;
+    ref.style.opacity = v === "overlay" ? String(mix / 100) : (v === "split" ? "1" : "");
+    ref.style.webkitClipPath = ref.style.clipPath = v === "split" ? `inset(0 ${100 - mix}% 0 0)` : "";
+    for (const b of document.querySelectorAll("#views button")) b.classList.toggle("on", b.dataset.v === v);
+    $("#mixwrap").hidden = v !== "overlay";
+    $("#mix").value = String(mix);
+    const sp = $("#split");
+    sp.classList.toggle("show", v === "split" && !!cur);
+    if (cur) {
+      sp.style.left = px(frameX + cur.eff.width * scale * mix / 100);
+      sp.style.top = px(frameY);
+      sp.style.height = px(cur.eff.height * scale);
+    }
+  }
+  function toStage(r) { // artboard units -> stage px
+    return { x: frameX + r.x * scale, y: frameY + r.y * scale, w: r.w * scale, h: r.h * scale };
+  }
+  function clientToArt(cx, cy) {
+    const st = $("#stage").getBoundingClientRect();
+    return { x: (cx - st.left - frameX) / scale, y: (cy - st.top - frameY) / scale };
+  }
+  function polyBounds(L) {
+    const dx = (L.x || 0) - L._x0, dy = (L.y || 0) - L._y0;
+    const xs = L.poly.map((p) => p[0] + dx), ys = L.poly.map((p) => p[1] + dy);
+    const x = Math.min(...xs), y = Math.min(...ys);
+    return { x, y, w: Math.max(...xs) - x, h: Math.max(...ys) - y };
+  }
+  function intersect(a, b) {
+    const x0 = Math.max(a.x, b.x), y0 = Math.max(a.y, b.y);
+    const x1 = Math.min(a.x + a.w, b.x + b.w), y1 = Math.min(a.y + a.h, b.y + b.h);
+    return x1 > x0 && y1 > y0 ? { x: x0, y: y0, w: x1 - x0, h: y1 - y0 } : null;
+  }
+  // tight bounds of what a layer actually paints, in artboard units
+  function layerBounds(L) {
+    const n = $(`#artboard > [data-id="${CSS.escape(L.id)}"]`);
+    if (!n) return null;
+    const ab = $("#artboard").getBoundingClientRect();
+    const toArt = (r) => ({ x: (r.left - ab.left) / scale, y: (r.top - ab.top) / scale, w: r.width / scale, h: r.height / scale });
+    if (L.type === "text" && !showsArt(L)) {
+      const ink = textInk(L, n, ab);
+      if (ink) return ink;
+    }
+    if (L.rotate) return toArt(n.getBoundingClientRect());
+    if (showsArt(L)) return { x: (L.x || 0) + (L.art.dx || 0), y: (L.y || 0) + (L.art.dy || 0), w: L.art.w, h: L.art.h };
+    const box = { x: L.x || 0, y: L.y || 0, w: L.w || 0, h: L.h || 0 };
+    let b = L.poly ? intersect(box, polyBounds(L)) || box : box;
+    if (L.type === "image") {
+      const S = cur.eff.sources[L.source];
+      const url = S && (L.cut && S.cut ? S.cut : S.src);
+      const a = url && alphaMap(url);
+      if (a && a.bounds) {
+        const r = srcRect(S), dx = (L.x || 0) - L._x0, dy = (L.y || 0) - L._y0;
+        const ink = { x: r.x + dx + a.bounds.u0 * r.w, y: r.y + dy + a.bounds.v0 * r.h, w: (a.bounds.u1 - a.bounds.u0) * r.w, h: (a.bounds.v1 - a.bounds.v0) * r.h };
+        b = intersect(b, ink) || b;
+      }
+    }
+    if (L.scale != null && L.scale !== 1) {
+      const cx = (L.x || 0) + (L.w || 0) / 2, cy = (L.y || 0) + (L.h || 0) / 2;
+      b = { x: cx + (b.x - cx) * L.scale, y: cy + (b.y - cy) * L.scale, w: b.w * L.scale, h: b.h * L.scale };
+    }
+    return b;
+  }
+  // Glyph ink of a text layer, not its (much taller) line boxes: horizontal
+  // extent from the laid-out line rects, vertical from canvas text metrics
+  // placed on each line's baseline.
+  const measure = document.createElement("canvas").getContext("2d");
+  function textInk(L, n, ab) {
+    const range = document.createRange();
+    range.selectNodeContents(n);
+    const rects = [...range.getClientRects()].filter((r) => r.width && r.height);
+    if (!rects.length) return null;
+    const toArtX = (x) => (x - ab.left) / scale, toArtY = (y) => (y - ab.top) / scale;
+    const lines = String(L.text == null ? "" : L.text).split("\n");
+    const size = L.size || 24, lh = (L.leading == null ? 1.2 : L.leading) * size;
+    measure.font = `${L.italic ? "italic " : ""}${L.weight || 400} ${size}px "${L.font || "Inter"}", sans-serif`;
+    const fm = measure.measureText("Hg");
+    const fA = fm.fontBoundingBoxAscent, fD = fm.fontBoundingBoxDescent;
+    const top0 = L.y || 0; // first line box starts at the layer's y (photo-text padding sits outside it)
+    let x0 = Infinity, x1 = -Infinity, y0 = Infinity, y1 = -Infinity;
+    for (const r of rects) { x0 = Math.min(x0, toArtX(r.left)); x1 = Math.max(x1, toArtX(r.right)); }
+    if (!(fA > 0) || L.rotate || (L.scale != null && L.scale !== 1)) {
+      for (const r of rects) { y0 = Math.min(y0, toArtY(r.top)); y1 = Math.max(y1, toArtY(r.bottom)); }
+    } else {
+      lines.forEach((line, i) => {
+        if (!line.trim()) return;
+        const m = measure.measureText(line);
+        const base = top0 + i * lh + (lh - (fA + fD)) / 2 + fA;
+        y0 = Math.min(y0, base - m.actualBoundingBoxAscent);
+        y1 = Math.max(y1, base + m.actualBoundingBoxDescent);
+      });
+      if (!(y1 > y0)) return null;
+    }
+    return { x: x0, y: y0, w: x1 - x0, h: y1 - y0 };
+  }
+  function updateSelection() {
+    const box = $("#selbox");
+    const L = cur && !BARE && getView() !== "original" ? layerById(selId()) : null;
+    const b = L && !L.hidden && layerBounds(L);
+    box.classList.toggle("show", !!b);
+    if (!b) return;
+    const r = toStage(b);
+    Object.assign(box.style, { left: px(r.x), top: px(r.y), width: px(r.w), height: px(r.h) });
+    box.firstChild.textContent = L.name || L.id;
+  }
+
+  // what is under the pointer, topmost first (transparent pixels don't count)
+  function pointInPoly(x, y, poly) {
+    let inside = false;
+    for (let i = 0, j = poly.length - 1; i < poly.length; j = i++) {
+      const [xi, yi] = poly[i], [xj, yj] = poly[j];
+      if ((yi > y) !== (yj > y) && x < ((xj - xi) * (y - yi)) / (yj - yi) + xi) inside = !inside;
+    }
+    return inside;
+  }
+  function hitTest(cx, cy) {
+    const p = clientToArt(cx, cy);
+    const out = [];
+    for (const L of [...cur.eff.layers].reverse()) {
+      if (L.hidden || L.locked) continue;
+      const b = layerBounds(L);
+      if (!b || p.x < b.x || p.y < b.y || p.x > b.x + b.w || p.y > b.y + b.h) continue;
+      const dx = (L.x || 0) - L._x0, dy = (L.y || 0) - L._y0;
+      if (L.poly && !L.rotate && !pointInPoly(p.x - dx, p.y - dy, L.poly)) continue;
+      if (L.type === "image" && !L.rotate && (L.scale == null || L.scale === 1)) {
+        const S = cur.eff.sources[L.source];
+        const url = S && (L.cut && S.cut ? S.cut : S.src);
+        const a = url && alphaMap(url);
+        if (a) {
+          const r = srcRect(S);
+          const u = (p.x - r.x - dx) / r.w, v = (p.y - r.y - dy) / r.h;
+          const ax = Math.min(a.W - 1, Math.max(0, Math.floor(u * a.W))), ay = Math.min(a.H - 1, Math.max(0, Math.floor(v * a.H)));
+          if (a.d[(ay * a.W + ax) * 4 + 3] < 24) continue;
+        }
+      }
+      out.push(L.id);
+    }
+    return out;
+  }
+
+  // ---------------------------------------------------------------- changes
+  function remixOf(id) {
+    cur.remix.layers = cur.remix.layers || {};
+    return (cur.remix.layers[id] = cur.remix.layers[id] || {});
+  }
+  function extraOf(id) {
+    return (cur.remix.extra || []).find((X) => X.id === id);
+  }
+  // one undoable step; `coalesce` merges a burst of edits to the same field
+  function mutate(fn, opts = {}) {
+    const before = JSON.stringify(cur.remix);
+    fn(cur.remix);
+    const after = JSON.stringify(cur.remix);
+    if (before === after) return;
+    const now = Date.now();
+    if (!(opts.coalesce && opts.coalesce === coalesceKey && now - coalesceAt < 1200)) {
+      undoStack.push(before);
+      if (undoStack.length > 200) undoStack.shift();
+    }
+    coalesceKey = opts.coalesce || null;
+    coalesceAt = now;
+    redoStack = [];
+    scheduleSave();
+    refresh(opts);
+  }
+  function patchLayer(id, patch, opts = {}) {
+    mutate(() => {
+      const target = extraOf(id) || remixOf(id);
+      for (const [k, v] of Object.entries(patch)) {
+        if (k === "style") target.style = Object.assign({}, target.style || {}, v);
+        else target[k] = v;
+      }
+    }, Object.assign({ only: id }, opts));
+  }
+  function patchSource(sid, patch, opts = {}) {
+    mutate((rx) => {
+      rx.sources = rx.sources || {};
+      rx.sources[sid] = Object.assign({}, rx.sources[sid] || {}, patch);
+    }, opts);
+  }
+  // re-derive the poster and repaint; panels only when the edit came from elsewhere
+  async function refresh(opts = {}) {
+    cur.eff = effective(cur.def, cur.remix);
+    if (opts.only && !opts.reload) {
+      const L = layerById(opts.only);
+      if (L) rerenderLayer(L);
+    } else {
+      if (opts.reload) await preload(cur.eff);
+      renderArtboard();
+    }
+    updateSelection();
+    renderLayersPanel();
+    if (opts.from !== "inspector") renderInspector();
+    syncUndoButtons();
+  }
+  function undo() {
+    if (!undoStack.length) return;
+    redoStack.push(JSON.stringify(cur.remix));
+    cur.remix = JSON.parse(undoStack.pop());
+    coalesceKey = null;
+    scheduleSave();
+    refresh({ reload: true });
+  }
+  function redo() {
+    if (!redoStack.length) return;
+    undoStack.push(JSON.stringify(cur.remix));
+    cur.remix = JSON.parse(redoStack.pop());
+    coalesceKey = null;
+    scheduleSave();
+    refresh({ reload: true });
+  }
+  function syncUndoButtons() {
+    $("#undo").disabled = !undoStack.length;
+    $("#redo").disabled = !redoStack.length;
+    $("#reset").disabled = !cur || !Object.keys(cur.remix).length;
+  }
+
+  // ---------------------------------------------------------------- storage
+  let saveTimer = null;
+  function scheduleSave() {
+    if (PURE) return;
+    clearTimeout(saveTimer);
+    const id = cur.id, data = JSON.stringify(cur.remix);
+    saveTimer = setTimeout(() => {
+      fused.runPython("store.py", { op: "save", poster: id, data }, { key: "save-" + id })
+        .catch((err) => toast("Couldn't save: " + err.message, { error: true }));
+    }, 450);
+  }
+  async function loadRemix(id) {
+    if (PURE) return {};
+    try {
+      const r = await fused.runPython("store.py", { op: "load", poster: id }, { key: "load" });
+      return r && typeof r === "object" ? r : {};
+    } catch (err) {
+      toast("Couldn't load saved changes: " + err.message, { error: true });
+      return {};
+    }
+  }
+
+  // ---------------------------------------------------------------- toast
+  let toastTimer = null;
+  function toast(msg, opts = {}) {
+    const t = $("#toast");
+    t.textContent = msg;
+    t.className = "show" + (opts.busy ? " busy" : "");
+    clearTimeout(toastTimer);
+    if (!opts.busy) toastTimer = setTimeout(() => { t.className = ""; }, opts.error ? 5000 : 2200);
+  }
+  const untoast = () => { $("#toast").className = ""; };
+
+  // ---------------------------------------------------------------- posters
+  async function preload(eff) {
+    const urls = Object.values(eff.sources).flatMap((S) => [S.src, S.cut]).filter(Boolean);
+    await Promise.all(urls.map(loadImage));
+  }
+  async function openPoster(id, seq) {
+    const entry = registry.find((r) => r.id === id && r.file) || { id, file: `posters/${id}.json` };
+    let def = defs.get(id);
+    if (!def) {
+      try {
+        def = JSON.parse(await fused.readFile(entry.file));
+      } catch (err) {
+        toast(`Couldn't open ${entry.file}: ${err.message}`, { error: true });
+        return false;
+      }
+      defs.set(id, def);
+    }
+    const remix = await loadRemix(id);
+    if (seq !== drawSeq) return false;
+    cur = { id, def, remix, eff: null };
+    undoStack = []; redoStack = []; coalesceKey = null;
+    cur.eff = effective(def, remix);
+    await preload(cur.eff);
+    if (seq !== drawSeq) return false;
+    renderArtboard();
+    $("#ref").src = asset(def.ref);
+    $("#title").textContent = def.title || id;
+    document.title = (def.title || id) + " — Poster Lab";
+    fit();
+    await fontsFor(cur.eff);
+    if (seq !== drawSeq) return false;
+    renderArtboard(); // fonts are in: re-lay text so bounds are exact
+    await Promise.all([...document.querySelectorAll("#artboard img")].map((im) => (im.decode ? im.decode().catch(() => null) : null)));
+    document.documentElement.dataset.ready = id;
+    window.__posterReady = id;
+    return true;
+  }
+  async function draw() {
+    const seq = ++drawSeq;
+    let id = fused.params.get("poster");
+    if (!id || !/^[a-z0-9-]+$/.test(id)) {
+      const first = registry.find((r) => r.file);
+      if (!first) return;
+      id = first.id;
+    }
+    if (!cur || cur.id !== id) {
+      delete document.documentElement.dataset.ready;
+      const ok = await openPoster(id, seq);
+      if (!ok) return;
+    }
+    if (seq !== drawSeq) return;
+    updateCompare();
+    updateSelection();
+    renderShelf();
+    renderLayersPanel();
+    renderInspector();
+    syncUndoButtons();
+  }
+
+  // ---------------------------------------------------------------- shelf
+  function renderShelf() {
+    const id = cur && cur.id;
+    const built = registry.filter((r) => r.file), soon = registry.filter((r) => !r.file);
+    const card = (r) => h("button", {
+      class: "card" + (r.id === id ? " on" : "") + (r.file ? "" : " soon"),
+      title: r.file ? r.title : r.title + " — not recreated yet",
+      onclick: r.file ? () => { setParam("layer", ""); setParam("poster", r.id); } : null,
+    }, h("img", { src: fused.rawUrl(r.thumb || r.ref), alt: "", loading: "lazy" }), h("div", { class: "cap" }, h("span", { text: r.title }), h("span", { text: r.file ? "" : "soon" })));
+    // sections in first-seen order: "Recreated", any named sets ("Bali set"), then "Up next"
+    const groups = new Map();
+    for (const r of built) {
+      const g = r.group || "Recreated";
+      if (!groups.has(g)) groups.set(g, []);
+      groups.get(g).push(r);
+    }
+    if (soon.length) groups.set("Up next", soon);
+    $("#shelf").replaceChildren(...[...groups].flatMap(([g, rs]) => [h("div", { class: "shelf-h", text: g }), ...rs.map(card)]));
+  }
+
+  // ---------------------------------------------------------------- layers panel
+  let dragRow = null;
+  function thumbFor(L) {
+    if (L.type === "image") {
+      const S = cur.eff.sources[L.source];
+      if (S) return h("span", { class: "kind" }, h("img", { src: asset(L.cut && S.cut ? S.cut : S.src), alt: "" }));
+    }
+    return h("span", { class: "kind", html: ICON[L.type] || ICON.shape });
+  }
+  function renderLayersPanel() {
+    if (!cur) return;
+    const sel = selId();
+    const rows = [...cur.eff.layers].reverse().map((L) => {
+      const r = h("div", {
+        class: "lrow" + (L.id === sel ? " on" : "") + (L.hidden ? " off" : ""),
+        draggable: "true",
+        onclick: () => setParam("layer", L.id),
+        ondragstart: (e) => { dragRow = L.id; e.dataTransfer.effectAllowed = "move"; e.dataTransfer.setData("text/plain", L.id); },
+        ondragover: (e) => {
+          if (!dragRow || dragRow === L.id) return;
+          e.preventDefault();
+          const b = r.getBoundingClientRect(), above = e.clientY < b.top + b.height / 2;
+          r.classList.toggle("drop-above", above);
+          r.classList.toggle("drop-below", !above);
+        },
+        ondragleave: () => r.classList.remove("drop-above", "drop-below"),
+        ondrop: (e) => {
+          e.preventDefault();
+          const above = r.classList.contains("drop-above");
+          r.classList.remove("drop-above", "drop-below");
+          if (dragRow) moveLayer(dragRow, L.id, above);
+          dragRow = null;
+        },
+        ondragend: () => { dragRow = null; },
+      },
+        h("button", { class: "eye", title: L.hidden ? "Show layer" : "Hide layer", html: L.hidden ? ICON.eyeOff : ICON.eye, onclick: (e) => { e.stopPropagation(); patchLayer(L.id, { hidden: !L.hidden }); } }),
+        thumbFor(L),
+        h("span", { class: "lname", text: L.name || L.id }),
+        L._extra ? h("span", { class: "tag", text: "added" }) : null);
+      r.dataset.id = L.id;
+      return r;
+    });
+    $("#layer-list").replaceChildren(...rows);
+    $("#layercount").textContent = String(cur.eff.layers.length);
+  }
+  // drop `id` above/below `targetId` in the visual list (top of list = front)
+  function moveLayer(id, targetId, above) {
+    const order = cur.eff.layers.map((L) => L.id).filter((x) => x !== id);
+    const i = order.indexOf(targetId);
+    if (i < 0) return;
+    order.splice(above ? i + 1 : i, 0, id); // render order is bottom->top
+    mutate((rx) => { rx.order = order; });
+  }
+  function stepLayer(id, dir) {
+    const order = cur.eff.layers.map((L) => L.id);
+    const i = order.indexOf(id), j = i + dir;
+    if (i < 0 || j < 0 || j >= order.length) return;
+    [order[i], order[j]] = [order[j], order[i]];
+    mutate((rx) => { rx.order = order; });
+  }
+
+  // ---------------------------------------------------------------- inspector
+  function numBox(label, value, onInput, opts = {}) {
+    const input = h("input", { type: "text", inputmode: "decimal", value: value == null ? "" : String(round(value, opts.decimals == null ? 1 : opts.decimals)) });
+    const commit = () => {
+      const v = parseFloat(input.value);
+      if (Number.isFinite(v)) onInput(v);
+    };
+    input.addEventListener("change", commit);
+    input.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") { commit(); input.blur(); }
+      if (e.key === "ArrowUp" || e.key === "ArrowDown") {
+        e.preventDefault();
+        const step = (opts.step || 1) * (e.shiftKey ? 10 : 1) * (e.key === "ArrowUp" ? 1 : -1);
+        const v = round((parseFloat(input.value) || 0) + step, 3);
+        input.value = String(v);
+        onInput(v);
+      }
+    });
+    const b = h("b", { text: label, title: "Drag to scrub" });
+    b.addEventListener("pointerdown", (e) => {
+      e.preventDefault();
+      b.setPointerCapture(e.pointerId);
+      const start = e.clientX, v0 = parseFloat(input.value) || 0;
+      const move = (ev) => {
+        const v = round(v0 + (ev.clientX - start) * (opts.step || 1) * (ev.shiftKey ? 10 : 1), 3);
+        input.value = String(v);
+        onInput(v);
+      };
+      const up = () => { b.removeEventListener("pointermove", move); b.removeEventListener("pointerup", up); };
+      b.addEventListener("pointermove", move);
+      b.addEventListener("pointerup", up);
+    });
+    return h("label", { class: "num" }, b, input);
+  }
+  function slider(value, min, max, step, fmt, onInput) {
+    const out = h("span", { class: "val", text: fmt(value) });
+    const r = h("input", { type: "range", min, max, step, value: String(value) });
+    r.addEventListener("input", () => { out.textContent = fmt(+r.value); onInput(+r.value); });
+    return [r, out];
+  }
+  function colorBox(value, onInput) {
+    const hex = /^#[0-9a-f]{6}$/i.test(value || "") ? value : "#000000";
+    const sw = h("span", { class: "swatch" });
+    sw.style.background = value || hex;
+    const pick = h("input", { type: "color", value: hex });
+    const text = h("input", { class: "field", type: "text", value: value || "", spellcheck: "false" });
+    pick.addEventListener("input", () => { sw.style.background = pick.value; text.value = pick.value; onInput(pick.value); });
+    text.addEventListener("change", () => { sw.style.background = text.value; onInput(text.value); });
+    sw.append(pick);
+    return [sw, text];
+  }
+  const row = (label, ...ctl) => h("div", { class: "row" }, h("label", { text: label }), h("div", { class: "ctl" }, ...ctl));
+  const group = (title, ...kids) => h("div", { class: "group" }, title ? h("div", { class: "group-h", text: title }) : null, ...kids);
+  const BLENDS = ["normal", "multiply", "screen", "overlay", "darken", "lighten", "color-dodge", "color-burn", "hard-light", "soft-light", "difference", "exclusion", "hue", "saturation", "color", "luminosity"];
+
+  function renderInspector() {
+    const box = $("#inspector");
+    if (!cur) { box.replaceChildren(); return; }
+    const L = layerById(selId());
+    if (!L) { box.replaceChildren(...posterPanel().filter(Boolean)); return; }
+    const fromI = { from: "inspector" };
+    const live = (patch, key) => patchLayer(L.id, patch, Object.assign({ coalesce: (key || Object.keys(patch).join()) + L.id }, fromI));
+    const parts = [h("div", { class: "ihead" }, h("b", { text: L.name || L.id }), h("span", { text: L._extra ? "added " + L.type : L.type }))];
+    const sid = usesSource(L);
+
+    if (L.type === "text") {
+      const ta = h("textarea", { class: "field", rows: "2", spellcheck: "false" });
+      ta.value = L.text || "";
+      ta.addEventListener("input", () => live({ text: ta.value }, "text"));
+      const fam = h("select", { class: "field" }, families().map((f) => h("option", { value: f, text: f, selected: f === L.font })));
+      fam.addEventListener("change", () => live({ font: fam.value }));
+      const wt = h("select", { class: "field" }, [100, 200, 300, 400, 500, 600, 700, 800, 900].map((w) => h("option", { value: String(w), text: String(w), selected: (L.weight || 400) === w })));
+      wt.addEventListener("change", () => live({ weight: +wt.value }));
+      const it = h("input", { type: "checkbox", checked: !!L.italic });
+      it.addEventListener("change", () => live({ italic: it.checked }));
+      const al = h("select", { class: "field" }, ["left", "center", "right"].map((a) => h("option", { value: a, text: "Align " + a, selected: (L.align || "left") === a })));
+      al.addEventListener("change", () => live({ align: al.value }));
+      parts.push(group("Text", ta,
+        h("div", { style: "height:7px" }),
+        row("Font", fam),
+        row("Weight", wt, h("label", { class: "chk", style: "margin:0" }, it, "Italic")),
+        h("div", { class: "grid2" },
+          numBox("Sz", L.size, (v) => live({ size: v })),
+          numBox("Lh", L.leading == null ? 1.2 : L.leading, (v) => live({ leading: v }), { step: 0.01, decimals: 3 }),
+          numBox("Tr", L.tracking || 0, (v) => live({ tracking: v }), { step: 0.005, decimals: 3 }),
+          al),
+        sid ? h("div", { class: "note", text: "The letters show the photo “" + (cur.eff.sources[sid].label || sid) + "” — swap it below." })
+          : row("Colour", ...colorBox(L.color, (v) => live({ color: v }, "color"))),
+        showsArt(L) ? h("div", { class: "note", text: "Showing the original lettering from the pin. Change the words and it switches to the live font above." }) : null));
+    }
+    if (sid) parts.push(photoGroup(L, sid));
+    if (L.type === "shape" && !sid) parts.push(group("Fill", row("Colour", ...colorBox(L.fill, (v) => live({ fill: v }, "fill")))));
+    if (L.type === "svg") parts.push(group("Line art", row("Colour", ...colorBox((L.style && L.style.color) || "#000000", (v) => live({ style: { color: v } }, "color")))));
+
+    const geo = [numBox("X", L.x || 0, (v) => live({ x: v }, "xy")), numBox("Y", L.y || 0, (v) => live({ y: v }, "xy"))];
+    if (L.type !== "text" && L.type !== "image") geo.push(numBox("W", L.w || 0, (v) => live({ w: v })), numBox("H", L.h || 0, (v) => live({ h: v })));
+    geo.push(numBox("°", L.rotate || 0, (v) => live({ rotate: v })), numBox("%", (L.scale == null ? 1 : L.scale) * 100, (v) => live({ scale: v / 100 })));
+    parts.push(group("Position", h("div", { class: "grid2" }, ...geo)));
+
+    const blend = h("select", { class: "field" }, BLENDS.map((b) => h("option", { value: b, text: b, selected: (L.blend || "normal") === b })));
+    blend.addEventListener("change", () => live({ blend: blend.value }));
+    const filt = h("input", { class: "field", type: "text", value: L.filter || "", placeholder: "e.g. grayscale(1) blur(2px)", spellcheck: "false" });
+    filt.addEventListener("change", () => live({ filter: filt.value || null }));
+    parts.push(group("Appearance",
+      row("Opacity", ...slider(L.opacity == null ? 1 : L.opacity, 0, 1, 0.01, (v) => Math.round(v * 100) + "%", (v) => live({ opacity: v }))),
+      row("Blend", blend),
+      row("Filter", filt)));
+
+    const acts = [
+      h("button", { class: "btn", text: "Bring forward", onclick: () => stepLayer(L.id, 1) }),
+      h("button", { class: "btn", text: "Send back", onclick: () => stepLayer(L.id, -1) }),
+    ];
+    if (L._extra) acts.push(h("button", { class: "btn danger", text: "Delete", onclick: () => deleteLayer(L.id) }));
+    else acts.push(h("button", { class: "btn", text: "Reset layer", disabled: !(cur.remix.layers && cur.remix.layers[L.id]), onclick: () => mutate((rx) => { delete rx.layers[L.id]; }) }));
+    parts.push(group("", h("div", { class: "acts" }, ...acts)));
+    box.replaceChildren(...parts);
+  }
+  function sharers(sid) {
+    return cur.eff.layers.filter((L) => usesSource(L) === sid);
+  }
+  function photoGroup(L, sid) {
+    const S = cur.eff.sources[sid];
+    const fromI = { from: "inspector" };
+    const showCut = L.type === "image" && L.cut && S.cut;
+    const thumb = h("div", { class: "thumb" + (showCut ? " cut" : "") }, h("img", { src: asset(showCut ? S.cut : S.src), alt: "" }));
+    const n = sharers(sid).length;
+    const changed = S.src !== S._default.src;
+    const kids = [
+      h("div", { class: "photo" }, thumb, h("div", { class: "meta" },
+        h("div", { text: S.label || sid }),
+        h("small", { text: n > 1 ? `Shared by ${n} layers — they stay lined up` : (showCut ? "Cut-out of the subject" : "Photo") }),
+        h("div", { class: "acts" },
+          h("button", { class: "btn primary", text: "Replace…", onclick: () => pickFile((f) => replaceSource(sid, f)) }),
+          changed ? h("button", { class: "btn", text: "Original", onclick: () => mutate((rx) => { delete rx.sources[sid]; }, { reload: true }) }) : null))),
+    ];
+    if (L.type === "image" && S.cut) {
+      const c = h("input", { type: "checkbox", checked: !!L.cut });
+      c.addEventListener("change", () => patchLayer(L.id, { cut: c.checked }, fromI));
+      kids.push(h("label", { class: "chk" }, c, "Cut out the subject"));
+    }
+    const zoom = S.zoom || 1, fx = S.fx == null ? 0.5 : S.fx, fy = S.fy == null ? 0.5 : S.fy;
+    const src = (patch, key) => patchSource(sid, patch, Object.assign({ coalesce: key + sid }, fromI));
+    kids.push(
+      row("Zoom", ...slider(zoom, 0.5, 3, 0.01, (v) => Math.round(v * 100) + "%", (v) => src({ zoom: v }, "zoom"))),
+      row("Pan X", ...slider(fx, 0, 1, 0.005, (v) => Math.round(v * 100) + "%", (v) => src({ fx: v }, "fx"))),
+      row("Pan Y", ...slider(fy, 0, 1, 0.005, (v) => Math.round(v * 100) + "%", (v) => src({ fy: v }, "fy"))));
+    return group("Photo", ...kids);
+  }
+  function posterPanel() {
+    const E = cur.eff;
+    const items = Object.entries(E.sources).map(([sid, S]) => h("div", { class: "swapitem" },
+      h("div", { class: "thumb", style: `background-image:url("${asset(S.cut || S.src)}")` }),
+      h("div", { class: "meta" }, h("div", { text: S.label || sid }), h("small", { text: sharers(sid).map((L) => L.name || L.id).join(", ") })),
+      h("button", { class: "btn", text: "Replace…", onclick: () => pickFile((f) => replaceSource(sid, f)) })));
+    return [
+      h("div", { class: "ihead" }, h("b", { text: E.title || cur.id }), h("span", { text: `${E.width} × ${E.height}` })),
+      items.length ? group("Swap photos", h("div", { class: "swaplist" }, ...items)) : null,
+      group("How to remix", h("div", { class: "note", html:
+        "Pick a layer on the poster or in the list, then edit it here. " +
+        "Drop any photo on a picture layer to swap it — subject cut-outs are redone automatically on this Mac.<br><br>" +
+        "<kbd>1</kbd>–<kbd>5</kbd> compare modes · <kbd>↑↓←→</kbd> nudge · <kbd>[</kbd> <kbd>]</kbd> reorder · <kbd>⌫</kbd> hide · <kbd>⌘Z</kbd> undo" })),
+      E.credit ? group("Source", h("div", { class: "note", text: E.credit })) : null,
+    ];
+  }
+
+  // ---------------------------------------------------------------- add / delete
+  const rid = (p) => p + "-" + Math.random().toString(36).slice(2, 8);
+  function addText() {
+    if (!cur) return;
+    const E = cur.eff, id = rid("text");
+    const X = { id, name: "Text", type: "text", text: "Your words", font: "Inter", weight: 700, size: Math.round(E.width / 10), color: "#111111", leading: 1.1, x: Math.round(E.width * 0.1), y: Math.round(E.height * 0.45) };
+    X.x0 = X.x; X.y0 = X.y;
+    mutate((rx) => { (rx.extra = rx.extra || []).push(X); rx.order = cur.eff.layers.map((L) => L.id).concat(id); });
+    setParam("layer", id);
+  }
+  async function addImage(file, at) {
+    if (!cur) return;
+    const up = await uploadFile(file);
+    if (!up) return;
+    const m = await loadImage(up.path);
+    const E = cur.eff, sid = rid("photo"), id = rid("image");
+    const w = Math.round(E.width * 0.6), hh = Math.round(w * (m.h || 1) / (m.w || 1));
+    const x = Math.round(at ? at.x - w / 2 : (E.width - w) / 2), y = Math.round(at ? at.y - hh / 2 : (E.height - hh) / 2);
+    const X = { id, name: file.name.replace(/\.[^.]+$/, "") || "Image", type: "image", source: sid, x, y, w, h: hh, x0: x, y0: y };
+    mutate((rx) => {
+      (rx.extra = rx.extra || []).push(X);
+      rx.sources = rx.sources || {};
+      rx.sources[sid] = { label: X.name, src: up.path, frame: { x, y, w, h: hh }, fit: "contain" };
+      rx.order = cur.eff.layers.map((L) => L.id).concat(id);
+    }, { reload: true });
+    setParam("layer", id);
+  }
+  function deleteLayer(id) {
+    mutate((rx) => {
+      rx.extra = (rx.extra || []).filter((X) => X.id !== id);
+      if (rx.order) rx.order = rx.order.filter((x) => x !== id);
+      if (rx.layers) delete rx.layers[id];
+    }, { reload: true });
+    setParam("layer", "");
+  }
+
+  // ---------------------------------------------------------------- uploads
+  let pickCb = null;
+  function pickFile(cb) {
+    pickCb = cb;
+    const fp = $("#filepick");
+    fp.value = "";
+    fp.click();
+  }
+  async function toDataUrl(file, max = 2400) {
+    let bmp;
+    try { bmp = await createImageBitmap(file); } catch (e) { throw new Error("this browser can't read that image type"); }
+    const k = Math.min(1, max / Math.max(bmp.width, bmp.height));
+    const c = document.createElement("canvas");
+    c.width = Math.round(bmp.width * k);
+    c.height = Math.round(bmp.height * k);
+    c.getContext("2d").drawImage(bmp, 0, 0, c.width, c.height);
+    const keepAlpha = /png|webp|gif/.test(file.type);
+    return c.toDataURL(keepAlpha ? "image/png" : "image/jpeg", 0.92);
+  }
+  async function uploadFile(file) {
+    try {
+      toast("Adding photo…", { busy: true });
+      const data = await toDataUrl(file);
+      const up = await fused.runPython("store.py", { op: "upload", data }, { key: null });
+      untoast();
+      return up;
+    } catch (err) {
+      toast("Couldn't add that image: " + err.message, { error: true });
+      return null;
+    }
+  }
+  async function replaceSource(sid, file) {
+    const up = await uploadFile(file);
+    if (!up) return;
+    let cut = null;
+    const wantsCut = !!cur.eff.sources[sid].cut || sharers(sid).some((L) => L.type === "image" && L.cut);
+    if (wantsCut) {
+      try {
+        toast("Cutting out the subject…", { busy: true });
+        cut = (await fused.runPython("store.py", { op: "cutout", path: up.path }, { key: null })).path;
+        untoast();
+      } catch (err) {
+        toast("Cut-out failed — showing the whole photo. " + err.message, { error: true });
+      }
+    }
+    patchSource(sid, { src: up.path, cut, zoom: 1, fx: 0.5, fy: 0.5 }, { reload: true });
+  }
+
+  // ---------------------------------------------------------------- stage input
+  function wireStage() {
+    const st = $("#stage");
+    new ResizeObserver(fit).observe(st);
+    let drag = null;
+    st.addEventListener("pointerdown", (e) => {
+      if (!cur || e.button !== 0 || getView() === "original") return;
+      if (e.target.closest("#split")) return;
+      const ids = hitTest(e.clientX, e.clientY);
+      const p = { x: e.clientX, y: e.clientY };
+      let id = ids[0] || "";
+      // clicking the same spot again digs one layer deeper
+      if (lastPick && Math.abs(lastPick.x - p.x) < 4 && Math.abs(lastPick.y - p.y) < 4 && ids.join() === lastPick.ids.join() && ids.length > 1) {
+        lastPick.i = (lastPick.i + 1) % ids.length;
+        id = ids[lastPick.i];
+      } else if (ids.includes(selId())) {
+        id = selId(); // keep the selection when grabbing it to drag
+        lastPick = { x: p.x, y: p.y, ids, i: ids.indexOf(id) };
+      } else {
+        lastPick = { x: p.x, y: p.y, ids, i: 0 };
+      }
+      if (id !== selId()) setParam("layer", id);
+      const L = layerById(id);
+      if (!L || L.locked) return;
+      st.setPointerCapture(e.pointerId);
+      const sid = usesSource(L);
+      const S = sid && cur.eff.sources[sid];
+      drag = { id, start: p, x0: L.x || 0, y0: L.y || 0, moved: false, pan: e.altKey && !!S, sid, fx0: S ? (S.fx == null ? 0.5 : S.fx) : 0, fy0: S ? (S.fy == null ? 0.5 : S.fy) : 0 };
+    });
+    st.addEventListener("pointermove", (e) => {
+      if (!drag) { hoverAt(e); return; }
+      const dx = (e.clientX - drag.start.x) / scale, dy = (e.clientY - drag.start.y) / scale;
+      if (!drag.moved && Math.hypot(dx * scale, dy * scale) < 3) return;
+      drag.moved = true;
+      $("#hover").style.display = "none";
+      const L = layerById(drag.id);
+      if (drag.pan) {
+        // drag the photo inside its frame: pointer travel -> pan fractions
+        const S = cur.eff.sources[drag.sid], r = srcRect(S), f = S.frame || { w: cur.eff.width, h: cur.eff.height };
+        const spanX = r.w - f.w, spanY = r.h - f.h;
+        S.fx = spanX > 0.5 ? Math.min(1, Math.max(0, drag.fx0 - dx / spanX)) : 0.5;
+        S.fy = spanY > 0.5 ? Math.min(1, Math.max(0, drag.fy0 - dy / spanY)) : 0.5;
+        for (const X of sharers(drag.sid)) rerenderLayer(X);
+      } else {
+        L.x = round(drag.x0 + dx, 1);
+        L.y = round(drag.y0 + dy, 1);
+        rerenderLayer(L);
+      }
+      updateSelection();
+    });
+    const end = () => {
+      if (!drag) return;
+      const d = drag;
+      drag = null;
+      if (!d.moved) return;
+      if (d.pan) {
+        const S = cur.eff.sources[d.sid];
+        patchSource(d.sid, { fx: round(S.fx, 4), fy: round(S.fy, 4) });
+      } else {
+        const L = layerById(d.id);
+        patchLayer(d.id, { x: L.x, y: L.y });
+      }
+    };
+    st.addEventListener("pointerup", end);
+    st.addEventListener("pointercancel", end);
+    st.addEventListener("pointerleave", () => { $("#hover").style.display = "none"; });
+
+    // compare divider
+    const sp = $("#split");
+    sp.addEventListener("pointerdown", (e) => {
+      e.stopPropagation();
+      sp.setPointerCapture(e.pointerId);
+      const move = (ev) => {
+        const st0 = st.getBoundingClientRect();
+        const m = Math.min(100, Math.max(0, ((ev.clientX - st0.left - frameX) / (cur.eff.width * scale)) * 100));
+        sp.style.left = px(frameX + cur.eff.width * scale * m / 100);
+        $("#ref").style.clipPath = $("#ref").style.webkitClipPath = `inset(0 ${100 - m}% 0 0)`;
+        sp.dataset.mix = String(Math.round(m));
+      };
+      const up = () => {
+        sp.removeEventListener("pointermove", move);
+        sp.removeEventListener("pointerup", up);
+        if (sp.dataset.mix) setParam("mix", sp.dataset.mix);
+      };
+      sp.addEventListener("pointermove", move);
+      sp.addEventListener("pointerup", up);
+    });
+
+    // drop an image: onto a picture layer = swap it, elsewhere = add it
+    st.addEventListener("dragover", (e) => {
+      if (![...(e.dataTransfer.types || [])].includes("Files")) return;
+      e.preventDefault();
+      st.classList.add("dropping");
+    });
+    st.addEventListener("dragleave", (e) => { if (e.target === st) st.classList.remove("dropping"); });
+    st.addEventListener("drop", (e) => {
+      st.classList.remove("dropping");
+      const f = [...(e.dataTransfer.files || [])].find((x) => x.type.startsWith("image/"));
+      if (!f || !cur) return;
+      e.preventDefault();
+      const ids = hitTest(e.clientX, e.clientY);
+      const L = ids.map(layerById).find((x) => x && usesSource(x));
+      if (L) { setParam("layer", L.id); replaceSource(usesSource(L), f); }
+      else addImage(f, clientToArt(e.clientX, e.clientY));
+    });
+  }
+  function hoverAt(e) {
+    const hv = $("#hover");
+    if (!cur || getView() === "original" || e.target.closest("#split")) { hv.style.display = "none"; return; }
+    const id = hitTest(e.clientX, e.clientY)[0];
+    const L = id && id !== selId() ? layerById(id) : null;
+    const b = L && layerBounds(L);
+    if (!b) { hv.style.display = "none"; return; }
+    const r = toStage(b);
+    Object.assign(hv.style, { display: "block", left: px(r.x), top: px(r.y), width: px(r.w), height: px(r.h) });
+  }
+
+  // ---------------------------------------------------------------- keys + chrome
+  function wireChrome() {
+    $("#undo").innerHTML = ICON.undo;
+    $("#redo").innerHTML = ICON.redo;
+    $("#addtext").innerHTML = ICON.plusText + "<span>Text</span>";
+    $("#addimage").innerHTML = ICON.plusImage + "<span>Image</span>";
+    $("#undo").onclick = undo;
+    $("#redo").onclick = redo;
+    $("#addtext").onclick = addText;
+    $("#addimage").onclick = () => pickFile((f) => addImage(f));
+    $("#reset").onclick = () => {
+      if (!cur || !Object.keys(cur.remix).length) return;
+      mutate((rx) => { for (const k of Object.keys(rx)) delete rx[k]; }, { reload: true });
+      toast("Back to the recreation — ⌘Z brings your changes back");
+    };
+    for (const b of document.querySelectorAll("#views button")) b.onclick = () => setParam("view", b.dataset.v);
+    $("#mix").addEventListener("input", (e) => { $("#ref").style.opacity = String(e.target.value / 100); });
+    $("#mix").addEventListener("change", (e) => setParam("mix", e.target.value));
+    $("#filepick").addEventListener("change", (e) => {
+      const f = e.target.files && e.target.files[0];
+      if (f && pickCb) pickCb(f);
+      pickCb = null;
+    });
+    window.addEventListener("keydown", (e) => {
+      if (!cur) return;
+      const typing = e.target.closest && e.target.closest("input, textarea, select, [contenteditable]");
+      const mod = e.metaKey || e.ctrlKey;
+      if (mod && e.key.toLowerCase() === "z" && !typing) { e.preventDefault(); if (e.shiftKey) redo(); else undo(); return; }
+      if (typing || mod) return;
+      if (e.key.length === 1 && "12345".includes(e.key)) {
+        setParam("view", ["remix", "original", "overlay", "split", "diff"][+e.key - 1]);
+        return;
+      }
+      if (e.key === "Escape") { setParam("layer", ""); return; }
+      const L = layerById(selId());
+      if (!L) return;
+      const step = e.shiftKey ? 10 : 1;
+      const nudge = { ArrowLeft: [-step, 0], ArrowRight: [step, 0], ArrowUp: [0, -step], ArrowDown: [0, step] }[e.key];
+      if (nudge) {
+        e.preventDefault();
+        patchLayer(L.id, { x: round((L.x || 0) + nudge[0], 1), y: round((L.y || 0) + nudge[1], 1) }, { coalesce: "nudge" + L.id });
+      } else if (e.key === "[" || e.key === "]") {
+        stepLayer(L.id, e.key === "]" ? 1 : -1);
+      } else if (e.key === "Backspace" || e.key === "Delete") {
+        e.preventDefault();
+        if (L._extra) deleteLayer(L.id);
+        else patchLayer(L.id, { hidden: true });
+      }
+    });
+  }
+
+  // ---------------------------------------------------------------- boot
+  async function renderPreview() {
+    document.documentElement.classList.add("preview");
+    try {
+      const reg = JSON.parse(await fused.readFile("posters/index.json"));
+      $("#preview").replaceChildren(...reg.filter((r) => r.file).slice(0, 3).map((r) => h("img", { src: fused.rawUrl(r.ref), alt: "" })));
+    } catch (e) { /* the empty placeholder is enough */ }
+  }
+  async function boot() {
+    if (isPreview()) return renderPreview();
+    if (BARE) document.documentElement.classList.add("bare");
+    wireChrome();
+    wireStage();
+    await loadFonts();
+    registry = JSON.parse(await fused.readFile("posters/index.json"));
+    renderShelf();
+    fused.params.onChange(draw);
+    await draw();
+  }
+  // read-only hooks for tests and the console
+  window.posterLab = {
+    hitTest: (x, y) => { const f = $("#frame").getBoundingClientRect(); return hitTest(f.left + x * scale, f.top + y * scale); },
+    bounds: (id) => layerBounds(layerById(id)),
+    state: () => cur && { id: cur.id, layer: selId(), view: getView(), remix: clone(cur.remix), layers: cur.eff.layers.map((L) => L.id) },
+  };
+  boot();
+})();
+</script>
+</body>
+</html>

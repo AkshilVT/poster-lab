@@ -1,0 +1,249 @@
+{
+ "id": "bali-gili-trace",
+ "title": "Bali \u2014 Gili Trace",
+ "ref": "refs/city-trace.jpg",
+ "width": 383,
+ "height": 680,
+ "background": "#e9e0d3",
+ "credit": "Bali set \u00b7 built on the City Trace recreation. Gili Trawangan street (12989c11), subject cut with Apple Vision.",
+ "sources": {
+  "photo": {
+   "label": "Gili walk",
+   "src": "assets/bali/gili-walk.jpg",
+   "cut": "assets/bali/gili-walk-cut.png",
+   "frame": {
+    "x": -60,
+    "y": 0,
+    "w": 383,
+    "h": 680
+   }
+  }
+ },
+ "layers": [
+  {
+   "id": "row-tr",
+   "name": "Letters TR",
+   "type": "text",
+   "text": "TR",
+   "fill": "@photo",
+   "font": "Inter",
+   "weight": 900,
+   "size": 234.2,
+   "leading": 1,
+   "tracking": -0.064,
+   "x": -7,
+   "y": 18.7,
+   "art": {
+    "src": "assets/city-trace/letters-tr.png",
+    "text": "TR",
+    "w": 293,
+    "h": 173,
+    "dx": 1,
+    "dy": 32.3
+   }
+  },
+  {
+   "id": "row-a",
+   "name": "Letter A",
+   "type": "text",
+   "text": "A",
+   "fill": "@photo",
+   "font": "Inter",
+   "weight": 800,
+   "size": 245.0,
+   "leading": 1,
+   "tracking": 0.0,
+   "x": -21,
+   "y": 197.8,
+   "art": {
+    "src": "assets/city-trace/letters-a.png",
+    "text": "A",
+    "w": 310,
+    "h": 185,
+    "dx": 4,
+    "dy": 26.2
+   }
+  },
+  {
+   "id": "row-ce",
+   "name": "Letters CE",
+   "type": "text",
+   "text": "CE",
+   "fill": "@photo",
+   "font": "Inter",
+   "weight": 900,
+   "size": 263.0,
+   "leading": 1,
+   "tracking": -0.1331,
+   "x": -33,
+   "y": 365.7,
+   "art": {
+    "src": "assets/city-trace/letters-ce.png",
+    "text": "CE",
+    "w": 304,
+    "h": 166,
+    "dx": 11,
+    "dy": 37.3
+   }
+  },
+  {
+   "id": "ground",
+   "name": "Crosswalk",
+   "type": "shape",
+   "x": 0,
+   "y": 556,
+   "w": 352,
+   "h": 124,
+   "fill": "@photo",
+   "poly": [
+    [
+     0,
+     556
+    ],
+    [
+     282.4,
+     556
+    ],
+    [
+     282.4,
+     592.3
+    ],
+    [
+     322,
+     642.8
+    ],
+    [
+     322,
+     680
+    ],
+    [
+     0,
+     680
+    ]
+   ]
+  },
+  {
+   "id": "subject",
+   "name": "Him",
+   "type": "image",
+   "source": "photo",
+   "cut": true,
+   "filter": "brightness(1.12)"
+  },
+  {
+   "id": "plus-tl",
+   "name": "Corner mark",
+   "type": "svg",
+   "x": 10.5,
+   "y": 16,
+   "w": 16,
+   "h": 16,
+   "svg": "<svg viewBox=\"0 0 16 16\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M8 0V16M0 8H16\" stroke=\"currentColor\" stroke-width=\"1.1\" fill=\"none\"/></svg>",
+   "style": {
+    "color": "#6f6862"
+   }
+  },
+  {
+   "id": "title",
+   "name": "Title",
+   "type": "text",
+   "text": "GILI\nTRACE",
+   "font": "Open Sans",
+   "weight": 800,
+   "size": 25.87,
+   "leading": 0.966,
+   "tracking": -0.024,
+   "color": "#0a0605",
+   "x": 296,
+   "y": 238,
+   "style": {
+    "fontVariationSettings": "\"wdth\" 75"
+   },
+   "art": {
+    "src": "assets/city-trace/letters-title.png",
+    "text": "CITY\nTRACE",
+    "w": 70,
+    "h": 50,
+    "dx": -3,
+    "dy": 0
+   }
+  },
+  {
+   "id": "dash-1",
+   "name": "Dash",
+   "type": "shape",
+   "x": 296.5,
+   "y": 300,
+   "w": 10,
+   "h": 1,
+   "fill": "#d7402c"
+  },
+  {
+   "id": "tag",
+   "name": "Tagline",
+   "type": "text",
+   "text": "HUMAN\nFRAGMENTS",
+   "font": "Lato",
+   "weight": 700,
+   "size": 9.17,
+   "leading": 1.31,
+   "tracking": 0.068,
+   "color": "#463e37",
+   "x": 296.5,
+   "y": 332
+  },
+  {
+   "id": "line",
+   "name": "Line",
+   "type": "text",
+   "text": "sandals, sun,\nno traffic lights",
+   "font": "Lato",
+   "italic": true,
+   "weight": 400,
+   "size": 7.7,
+   "leading": 1.43,
+   "tracking": 0.06,
+   "color": "#554c45",
+   "x": 296.5,
+   "y": 460.5
+  },
+  {
+   "id": "dash-2",
+   "name": "Dash",
+   "type": "shape",
+   "x": 296.5,
+   "y": 497.6,
+   "w": 10,
+   "h": 1,
+   "fill": "#d7402c"
+  },
+  {
+   "id": "year",
+   "name": "Year",
+   "type": "text",
+   "text": "2026",
+   "font": "Lato",
+   "weight": 400,
+   "size": 10.83,
+   "leading": 1.2,
+   "tracking": 0.06,
+   "color": "#655b52",
+   "x": 298,
+   "y": 576
+  },
+  {
+   "id": "plus-br",
+   "name": "Corner mark",
+   "type": "svg",
+   "x": 354.5,
+   "y": 648.5,
+   "w": 16,
+   "h": 16,
+   "svg": "<svg viewBox=\"0 0 16 16\" xmlns=\"http://www.w3.org/2000/svg\"><path d=\"M8 0V16M0 8H16\" stroke=\"currentColor\" stroke-width=\"1.1\" fill=\"none\"/></svg>",
+   "style": {
+    "color": "#6f6862"
+   }
+  }
+ ],
+ "group": "Bali set"
+}

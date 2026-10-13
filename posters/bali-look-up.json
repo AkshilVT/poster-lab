@@ -1,0 +1,500 @@
+{
+ "id": "bali-look-up",
+ "title": "Bali \u2014 Look Up",
+ "ref": "refs/look-up-kid.jpg",
+ "width": 736,
+ "height": 1114,
+ "background": "#e9e0d3",
+ "sources": {
+  "flight": {
+   "label": "Flight in",
+   "src": "assets/bali/rays/flight.jpg",
+   "frame": {
+    "x": 0,
+    "y": 6,
+    "w": 241,
+    "h": 635
+   },
+   "fx": 0.5,
+   "fy": 0.35
+  },
+  "tanah-lot": {
+   "label": "Tanah Lot",
+   "src": "assets/bali/rays/tanah-lot.jpg",
+   "frame": {
+    "x": 19,
+    "y": 0,
+    "w": 254,
+    "h": 627
+   },
+   "fx": 0.793,
+   "fy": 0.5,
+   "zoom": 1.0
+  },
+  "bingin": {
+   "label": "Bingin cliffs",
+   "src": "assets/bali/rays/bingin.jpg",
+   "frame": {
+    "x": 203,
+    "y": 0,
+    "w": 165,
+    "h": 624
+   },
+   "fx": 0.5,
+   "fy": 0.5
+  },
+  "turtle": {
+   "label": "Turtle",
+   "src": "assets/bali/rays/turtle.jpg",
+   "frame": {
+    "x": 356,
+    "y": 163,
+    "w": 380,
+    "h": 498
+   },
+   "fx": 0.265,
+   "fy": 1,
+   "zoom": 1.5
+  },
+  "gili-swing": {
+   "label": "Gili swing",
+   "src": "assets/bali/rays/gili-swing.jpg",
+   "frame": {
+    "x": 326,
+    "y": 0,
+    "w": 410,
+    "h": 642
+   },
+   "fx": 0.5,
+   "fy": 0.45
+  },
+  "sunset": {
+   "label": "Canggu sunset",
+   "src": "assets/bali/rays/sunset.jpg",
+   "frame": {
+    "x": 302,
+    "y": 0,
+    "w": 251,
+    "h": 629
+   },
+   "fx": 0.389,
+   "fy": 0.5,
+   "zoom": 1.0
+  },
+  "diver": {
+   "label": "Diver",
+   "src": "assets/bali/diver.jpg",
+   "cut": "assets/bali/diver-cut.png",
+   "frame": {
+    "x": 133,
+    "y": 634,
+    "w": 299,
+    "h": 480
+   }
+  }
+ },
+ "layers": [
+  {
+   "id": "grain",
+   "name": "Paper grain",
+   "type": "svg",
+   "x": 0,
+   "y": 0,
+   "w": 736,
+   "h": 1114,
+   "svg": "<svg xmlns='http://www.w3.org/2000/svg' width='100%' height='100%'><filter id='lukgrain' x='0' y='0' width='100%' height='100%' color-interpolation-filters='sRGB'><feTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='1' seed='3' result='f0'/><feColorMatrix in='f0' type='matrix' values='1 0 0 0 0  1 0 0 0 0  1 0 0 0 0  0 0 0 0 1' result='fine'/><feTurbulence type='fractalNoise' baseFrequency='0.14' numOctaves='2' seed='5' result='c0'/><feColorMatrix in='c0' type='matrix' values='1 0 0 0 0  1 0 0 0 0  1 0 0 0 0  0 0 0 0 1' result='coarse'/><feComposite in='fine' in2='coarse' operator='arithmetic' k1='0' k2='0.58' k3='0.3' k4='0.022'/></filter><rect width='100%' height='100%' filter='url(#lukgrain)'/></svg>",
+   "blend": "overlay",
+   "locked": true
+  },
+  {
+   "id": "flight",
+   "name": "Flight in ray",
+   "type": "image",
+   "source": "flight",
+   "x": 0,
+   "y": 6,
+   "w": 241,
+   "h": 635,
+   "poly": [
+    [
+     -3,
+     313.51
+    ],
+    [
+     -3,
+     -1.33
+    ],
+    [
+     240.95,
+     630.87
+    ],
+    [
+     238.51,
+     631.79
+    ],
+    [
+     236.07,
+     632.77
+    ],
+    [
+     233.63,
+     633.82
+    ],
+    [
+     231.19,
+     634.93
+    ],
+    [
+     228.75,
+     636.1
+    ],
+    [
+     226.31,
+     637.35
+    ],
+    [
+     223.87,
+     638.66
+    ],
+    [
+     221.43,
+     640.05
+    ]
+   ]
+  },
+  {
+   "id": "tanah-lot",
+   "name": "Tanah Lot ray",
+   "type": "image",
+   "source": "tanah-lot",
+   "x": 19,
+   "y": 0,
+   "w": 254,
+   "h": 627,
+   "poly": [
+    [
+     17.99,
+     -3
+    ],
+    [
+     185.55,
+     -3
+    ],
+    [
+     272.5,
+     623.92
+    ],
+    [
+     270.43,
+     624.11
+    ],
+    [
+     268.35,
+     624.34
+    ],
+    [
+     266.28,
+     624.6
+    ],
+    [
+     264.2,
+     624.9
+    ],
+    [
+     262.12,
+     625.24
+    ],
+    [
+     260.05,
+     625.61
+    ],
+    [
+     257.97,
+     626.02
+    ],
+    [
+     255.89,
+     626.47
+    ]
+   ]
+  },
+  {
+   "id": "bingin",
+   "name": "Bingin cliffs ray",
+   "type": "image",
+   "source": "bingin",
+   "x": 203,
+   "y": 0,
+   "w": 165,
+   "h": 624,
+   "poly": [
+    [
+     203.05,
+     -3
+    ],
+    [
+     367.45,
+     -3
+    ],
+    [
+     293.14,
+     623.97
+    ],
+    [
+     291.13,
+     623.81
+    ],
+    [
+     289.11,
+     623.69
+    ],
+    [
+     287.09,
+     623.59
+    ],
+    [
+     285.07,
+     623.53
+    ],
+    [
+     283.05,
+     623.51
+    ],
+    [
+     281.03,
+     623.52
+    ],
+    [
+     279.02,
+     623.56
+    ],
+    [
+     277.0,
+     623.63
+    ]
+   ]
+  },
+  {
+   "id": "sunset",
+   "name": "Canggu sunset ray",
+   "type": "image",
+   "source": "sunset",
+   "x": 302,
+   "y": 0,
+   "w": 251,
+   "h": 629,
+   "poly": [
+    [
+     391.71,
+     -3
+    ],
+    [
+     553.83,
+     -3
+    ],
+    [
+     318.33,
+     628.93
+    ],
+    [
+     316.39,
+     628.34
+    ],
+    [
+     314.46,
+     627.8
+    ],
+    [
+     312.52,
+     627.28
+    ],
+    [
+     310.58,
+     626.81
+    ],
+    [
+     308.65,
+     626.36
+    ],
+    [
+     306.71,
+     625.95
+    ],
+    [
+     304.77,
+     625.57
+    ],
+    [
+     302.84,
+     625.22
+    ]
+   ]
+  },
+  {
+   "id": "gili-swing",
+   "name": "Gili swing ray",
+   "type": "image",
+   "source": "gili-swing",
+   "x": 326,
+   "y": 0,
+   "w": 410,
+   "h": 642,
+   "poly": [
+    [
+     597.26,
+     -3
+    ],
+    [
+     739.0,
+     -3
+    ],
+    [
+     739,
+     109.6
+    ],
+    [
+     345.48,
+     641.17
+    ],
+    [
+     343.08,
+     639.75
+    ],
+    [
+     340.68,
+     638.4
+    ],
+    [
+     338.28,
+     637.12
+    ],
+    [
+     335.88,
+     635.9
+    ],
+    [
+     333.48,
+     634.76
+    ],
+    [
+     331.08,
+     633.67
+    ],
+    [
+     328.67,
+     632.65
+    ],
+    [
+     326.27,
+     631.69
+    ]
+   ]
+  },
+  {
+   "id": "turtle",
+   "name": "Turtle ray",
+   "type": "image",
+   "source": "turtle",
+   "x": 356,
+   "y": 163,
+   "w": 380,
+   "h": 498,
+   "poly": [
+    [
+     739,
+     159.51
+    ],
+    [
+     739,
+     355.85
+    ],
+    [
+     369.88,
+     660.78
+    ],
+    [
+     368.16,
+     659.01
+    ],
+    [
+     366.43,
+     657.32
+    ],
+    [
+     364.7,
+     655.69
+    ],
+    [
+     362.97,
+     654.12
+    ],
+    [
+     361.25,
+     652.61
+    ],
+    [
+     359.52,
+     651.16
+    ],
+    [
+     357.79,
+     649.76
+    ],
+    [
+     356.06,
+     648.41
+    ]
+   ]
+  },
+  {
+   "id": "diver",
+   "name": "Diver",
+   "type": "image",
+   "source": "diver",
+   "cut": true,
+   "x": 133,
+   "y": 634,
+   "w": 299,
+   "h": 480,
+   "filter": "drop-shadow(-11px -1px 11px rgba(0,0,0,0.065))"
+  },
+  {
+   "id": "headline",
+   "name": "Headline",
+   "type": "text",
+   "text": "LOOK UP,\nKID",
+   "font": "Jost",
+   "weight": 500,
+   "size": 52.5,
+   "leading": 1.448,
+   "tracking": 0.038,
+   "color": "#d7402c",
+   "x": 431.0,
+   "y": 798,
+   "art": {
+    "src": "assets/look-up-kid/headline-art.png",
+    "text": "LOOK UP,\nKID",
+    "w": 256,
+    "h": 132,
+    "dx": -3.0,
+    "dy": 8
+   }
+  },
+  {
+   "id": "tagline",
+   "name": "Tagline",
+   "type": "text",
+   "text": "Bali is wider than\nthey told you",
+   "font": "Rajdhani",
+   "weight": 500,
+   "size": 21.4,
+   "leading": 1.17,
+   "tracking": 0.046,
+   "color": "#2a241f",
+   "x": 433.6,
+   "y": 951.6
+  }
+ ],
+ "group": "Bali set",
+ "credit": "Bali set \u00b7 built on the Look Up, Kid recreation. Diver (_CJW4225) cut with Apple Vision; rays from the trip."
+}

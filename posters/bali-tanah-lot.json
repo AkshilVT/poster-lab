@@ -1,0 +1,85 @@
+{
+ "id": "bali-tanah-lot",
+ "title": "Bali \u2014 Tanah Lot",
+ "ref": "refs/tokyo.jpg",
+ "group": "Bali set",
+ "width": 735,
+ "height": 919,
+ "background": "#e9e0d3",
+ "credit": "Bali set \u00b7 built on the Tokyo recreation. Split gate at Tanah Lot (IMG_4093) keyed against the dusk sky.",
+ "sources": {
+  "gate": {
+   "label": "Temple gate",
+   "src": "assets/bali/tanah-lot-gate.jpg",
+   "cut": "assets/bali/tanah-lot-gate-cut.png",
+   "frame": {
+    "x": -12.5,
+    "y": 72,
+    "w": 900.0,
+    "h": 1200.0
+   }
+  }
+ },
+ "layers": [
+  {
+   "id": "band",
+   "name": "Red block",
+   "type": "shape",
+   "x": 0,
+   "y": 438,
+   "w": 735,
+   "h": 481,
+   "fill": "#d7402c"
+  },
+  {
+   "id": "word",
+   "name": "Big word",
+   "type": "text",
+   "text": "BALI",
+   "font": "Anton",
+   "size": 440,
+   "leading": 1,
+   "tracking": 0.012,
+   "color": "#d7402c",
+   "x": 9,
+   "y": 32.7
+  },
+  {
+   "id": "gate",
+   "name": "Temple gate",
+   "type": "image",
+   "source": "gate",
+   "cut": true,
+   "filter": "grayscale(1) brightness(1.45) contrast(1.15)"
+  },
+  {
+   "id": "place",
+   "name": "Place",
+   "type": "text",
+   "text": "TANAH LOT",
+   "font": "Inter",
+   "weight": 500,
+   "size": 34,
+   "leading": 1,
+   "tracking": -0.018,
+   "color": "#3a3129",
+   "x": 28,
+   "y": 14
+  },
+  {
+   "id": "country",
+   "name": "Country",
+   "type": "text",
+   "text": "INDONESIA",
+   "font": "Inter",
+   "weight": 500,
+   "size": 34,
+   "leading": 1,
+   "tracking": -0.018,
+   "color": "#3a3129",
+   "x": 534,
+   "y": 14,
+   "align": "left"
+  }
+ ]
+}

@@ -1,0 +1,266 @@
+[
+ {
+  "family": "Anton",
+  "file": "Anton-400.woff2",
+  "weight": "400",
+  "style": "normal"
+ },
+ {
+  "family": "Archivo",
+  "file": "Archivo-100_900-italic.woff2",
+  "weight": "100 900",
+  "style": "italic"
+ },
+ {
+  "family": "Archivo",
+  "file": "Archivo-100_900.woff2",
+  "weight": "100 900",
+  "style": "normal"
+ },
+ {
+  "family": "Arimo",
+  "file": "Arimo-400_700-italic.woff2",
+  "weight": "400 700",
+  "style": "italic"
+ },
+ {
+  "family": "Arimo",
+  "file": "Arimo-400_700.woff2",
+  "weight": "400 700",
+  "style": "normal"
+ },
+ {
+  "family": "Bellefair",
+  "file": "Bellefair-400.woff2",
+  "weight": "400",
+  "style": "normal"
+ },
+ {
+  "family": "Cormorant Garamond",
+  "file": "CormorantGaramond-300_700-italic.woff2",
+  "weight": "300 700",
+  "style": "italic"
+ },
+ {
+  "family": "Cormorant Garamond",
+  "file": "CormorantGaramond-300_700.woff2",
+  "weight": "300 700",
+  "style": "normal"
+ },
+ {
+  "family": "EB Garamond",
+  "file": "EBGaramond-400_800-italic.woff2",
+  "weight": "400 800",
+  "style": "italic"
+ },
+ {
+  "family": "EB Garamond",
+  "file": "EBGaramond-400_800.woff2",
+  "weight": "400 800",
+  "style": "normal"
+ },
+ {
+  "family": "Figtree",
+  "file": "Figtree-300_900-italic.woff2",
+  "weight": "300 900",
+  "style": "italic"
+ },
+ {
+  "family": "Figtree",
+  "file": "Figtree-300_900.woff2",
+  "weight": "300 900",
+  "style": "normal"
+ },
+ {
+  "family": "Inter",
+  "file": "Inter-100_900-italic.woff2",
+  "weight": "100 900",
+  "style": "italic"
+ },
+ {
+  "family": "Inter",
+  "file": "Inter-100_900.woff2",
+  "weight": "100 900",
+  "style": "normal"
+ },
+ {
+  "family": "Jost",
+  "file": "Jost-100_900-italic.woff2",
+  "weight": "100 900",
+  "style": "italic"
+ },
+ {
+  "family": "Jost",
+  "file": "Jost-100_900.woff2",
+  "weight": "100 900",
+  "style": "normal"
+ },
+ {
+  "family": "Jura",
+  "file": "Jura-300_700.woff2",
+  "weight": "300 700",
+  "style": "normal"
+ },
+ {
+  "family": "Lato",
+  "file": "Lato-300-italic.woff2",
+  "weight": "300",
+  "style": "italic"
+ },
+ {
+  "family": "Lato",
+  "file": "Lato-400-italic.woff2",
+  "weight": "400",
+  "style": "italic"
+ },
+ {
+  "family": "Lato",
+  "file": "Lato-700-italic.woff2",
+  "weight": "700",
+  "style": "italic"
+ },
+ {
+  "family": "Lato",
+  "file": "Lato-300.woff2",
+  "weight": "300",
+  "style": "normal"
+ },
+ {
+  "family": "Lato",
+  "file": "Lato-400.woff2",
+  "weight": "400",
+  "style": "normal"
+ },
+ {
+  "family": "Lato",
+  "file": "Lato-700.woff2",
+  "weight": "700",
+  "style": "normal"
+ },
+ {
+  "family": "Lato",
+  "file": "Lato-900.woff2",
+  "weight": "900",
+  "style": "normal"
+ },
+ {
+  "family": "Montserrat",
+  "file": "Montserrat-100_900-italic.woff2",
+  "weight": "100 900",
+  "style": "italic"
+ },
+ {
+  "family": "Montserrat",
+  "file": "Montserrat-100_900.woff2",
+  "weight": "100 900",
+  "style": "normal"
+ },
+ {
+  "family": "Open Sans",
+  "file": "OpenSans-300_800.woff2",
+  "weight": "300 800",
+  "style": "normal"
+ },
+ {
+  "family": "Playfair Display",
+  "file": "PlayfairDisplay-400_900-italic.woff2",
+  "weight": "400 900",
+  "style": "italic"
+ },
+ {
+  "family": "Playfair Display",
+  "file": "PlayfairDisplay-400_900.woff2",
+  "weight": "400 900",
+  "style": "normal"
+ },
+ {
+  "family": "Poppins",
+  "file": "Poppins-400-italic.woff2",
+  "weight": "400",
+  "style": "italic"
+ },
+ {
+  "family": "Poppins",
+  "file": "Poppins-300.woff2",
+  "weight": "300",
+  "style": "normal"
+ },
+ {
+  "family": "Poppins",
+  "file": "Poppins-400.woff2",
+  "weight": "400",
+  "style": "normal"
+ },
+ {
+  "family": "Poppins",
+  "file": "Poppins-500.woff2",
+  "weight": "500",
+  "style": "normal"
+ },
+ {
+  "family": "Poppins",
+  "file": "Poppins-600.woff2",
+  "weight": "600",
+  "style": "normal"
+ },
+ {
+  "family": "Poppins",
+  "file": "Poppins-700.woff2",
+  "weight": "700",
+  "style": "normal"
+ },
+ {
+  "family": "Poppins",
+  "file": "Poppins-800.woff2",
+  "weight": "800",
+  "style": "normal"
+ },
+ {
+  "family": "Poppins",
+  "file": "Poppins-900.woff2",
+  "weight": "900",
+  "style": "normal"
+ },
+ {
+  "family": "Rajdhani",
+  "file": "Rajdhani-300.woff2",
+  "weight": "300",
+  "style": "normal"
+ },
+ {
+  "family": "Rajdhani",
+  "file": "Rajdhani-400.woff2",
+  "weight": "400",
+  "style": "normal"
+ },
+ {
+  "family": "Rajdhani",
+  "file": "Rajdhani-500.woff2",
+  "weight": "500",
+  "style": "normal"
+ },
+ {
+  "family": "Rajdhani",
+  "file": "Rajdhani-600.woff2",
+  "weight": "600",
+  "style": "normal"
+ },
+ {
+  "family": "Rajdhani",
+  "file": "Rajdhani-700.woff2",
+  "weight": "700",
+  "style": "normal"
+ },
+ {
+  "family": "Roboto Condensed",
+  "file": "RobotoCondensed-100_900-italic.woff2",
+  "weight": "100 900",
+  "style": "italic"
+ },
+ {
+  "family": "Roboto Condensed",
+  "file": "RobotoCondensed-100_900.woff2",
+  "weight": "100 900",
+  "style": "normal"
+ }
+]
